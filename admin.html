@@ -26,7 +26,6 @@
       radial-gradient(circle at 80% 100%, rgba(212,175,55,0.05), transparent 50%);
   }
   
-  /* Header */
   header {
     border-bottom: 1px solid var(--border);
     padding: 24px 40px;
@@ -39,11 +38,7 @@
     align-items: center;
     justify-content: space-between;
   }
-  .logo {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-  }
+  .logo { display: flex; align-items: baseline; gap: 12px; }
   .logo-text {
     font-size: 22px;
     font-weight: 300;
@@ -56,20 +51,10 @@
     letter-spacing: 3px;
     text-transform: uppercase;
   }
-  .header-actions {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
+  .header-actions { display: flex; gap: 12px; align-items: center; }
   
-  /* Container */
-  .container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 40px;
-  }
+  .container { max-width: 1400px; margin: 0 auto; padding: 40px; }
   
-  /* Tabs */
   .tabs {
     display: flex;
     gap: 4px;
@@ -90,15 +75,11 @@
     font-family: inherit;
   }
   .tab:hover { color: var(--text); }
-  .tab.active {
-    color: var(--gold);
-    border-bottom-color: var(--gold);
-  }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
   
   .panel { display: none; }
   .panel.active { display: block; }
   
-  /* Stats */
   .stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -118,18 +99,9 @@
     text-transform: uppercase;
     margin-bottom: 8px;
   }
-  .stat-value {
-    font-size: 32px;
-    font-weight: 300;
-    color: var(--gold);
-  }
-  .stat-sub {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 4px;
-  }
+  .stat-value { font-size: 32px; font-weight: 300; color: var(--gold); }
+  .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
   
-  /* Groups */
   .groups-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -149,11 +121,7 @@
     justify-content: space-between;
     margin-bottom: 20px;
   }
-  .group-name {
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--gold);
-  }
+  .group-name { font-size: 18px; font-weight: 500; color: var(--gold); }
   .group-count {
     font-size: 11px;
     color: var(--muted);
@@ -177,14 +145,12 @@
     gap: 6px;
   }
   .screen-chip .dot {
-    width: 6px;
-    height: 6px;
+    width: 6px; height: 6px;
     border-radius: 50%;
     background: #4ade80;
   }
   .screen-chip.offline .dot { background: #666; }
   
-  /* Buttons */
   .btn {
     padding: 12px 22px;
     border: 1px solid var(--border);
@@ -201,6 +167,7 @@
     gap: 8px;
   }
   .btn:hover { border-color: var(--gold); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-primary {
     background: linear-gradient(135deg, var(--gold), var(--gold-dark));
     color: #000;
@@ -209,10 +176,8 @@
     text-transform: uppercase;
   }
   .btn-primary:hover { transform: translateY(-1px); }
-  .btn-danger:hover { border-color: #f87171; color: #f87171; }
   .btn-sm { padding: 8px 14px; font-size: 12px; }
   
-  /* Playlist */
   .playlist-section {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -228,11 +193,7 @@
     flex-wrap: wrap;
     gap: 16px;
   }
-  .playlist-title {
-    font-size: 20px;
-    color: var(--gold);
-    letter-spacing: 1px;
-  }
+  .playlist-title { font-size: 20px; color: var(--gold); letter-spacing: 1px; }
   
   .group-selector {
     background: var(--surface-2);
@@ -253,29 +214,26 @@
     cursor: pointer;
     transition: all 0.2s;
     margin-bottom: 24px;
+    position: relative;
   }
   .upload-zone:hover, .upload-zone.dragover {
     border-color: var(--gold);
     background: rgba(212,175,55,0.03);
   }
-  .upload-zone svg {
-    color: var(--gold);
-    margin-bottom: 12px;
-  }
-  .upload-zone-text {
-    font-size: 16px;
-    margin-bottom: 6px;
-  }
-  .upload-zone-sub {
-    font-size: 12px;
-    color: var(--muted);
+  .upload-zone svg { color: var(--gold); margin-bottom: 12px; }
+  .upload-zone-text { font-size: 16px; margin-bottom: 6px; }
+  .upload-zone-sub { font-size: 12px; color: var(--muted); }
+  
+  .upload-progress {
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 3px;
+    background: var(--gold);
+    transition: width 0.3s;
+    border-radius: 0 0 12px 12px;
   }
   
-  .playlist-items {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  .playlist-items { display: flex; flex-direction: column; gap: 10px; }
   .playlist-item {
     background: var(--surface-2);
     border: 1px solid var(--border);
@@ -288,11 +246,9 @@
     transition: border 0.2s;
   }
   .playlist-item:hover { border-color: var(--gold); }
-  .playlist-item.dragging { opacity: 0.5; }
   
   .item-thumb {
-    width: 80px;
-    height: 60px;
+    width: 80px; height: 60px;
     background: #000;
     border-radius: 6px;
     background-size: cover;
@@ -301,22 +257,9 @@
   }
   .item-thumb video { width: 100%; height: 100%; object-fit: cover; }
   
-  .item-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 0;
-  }
-  .item-name {
-    font-size: 14px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .item-meta {
-    font-size: 11px;
-    color: var(--muted);
-  }
+  .item-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .item-name { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item-meta { font-size: 11px; color: var(--muted); }
   
   .duration-input {
     background: var(--bg);
@@ -330,16 +273,12 @@
   }
   .duration-input:focus { outline: none; border-color: var(--gold); }
   
-  .item-actions {
-    display: flex;
-    gap: 6px;
-  }
+  .item-actions { display: flex; gap: 6px; }
   .icon-btn {
     background: none;
     border: 1px solid var(--border);
     color: var(--muted);
-    width: 32px;
-    height: 32px;
+    width: 32px; height: 32px;
     border-radius: 6px;
     cursor: pointer;
     display: flex;
@@ -356,7 +295,6 @@
     color: var(--muted);
   }
   
-  /* Toast */
   .toast {
     position: fixed;
     bottom: 30px;
@@ -372,11 +310,9 @@
     transition: transform 0.3s;
     box-shadow: 0 10px 40px rgba(0,0,0,0.5);
   }
-  .toast.show {
-    transform: translateX(-50%) translateY(0);
-  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { border-color: #f87171; }
   
-  /* Setup banner */
   .banner {
     background: rgba(212,175,55,0.08);
     border: 1px solid var(--gold);
@@ -387,22 +323,15 @@
     gap: 16px;
     align-items: flex-start;
   }
-  .banner-icon {
+  .banner-icon { color: var(--gold); flex-shrink: 0; }
+  .banner h3 {
     color: var(--gold);
-    flex-shrink: 0;
-  }
-  .banner h3 { 
-    color: var(--gold); 
     margin-bottom: 6px;
     font-size: 14px;
     letter-spacing: 1px;
     text-transform: uppercase;
   }
-  .banner p {
-    color: var(--muted);
-    font-size: 13px;
-    line-height: 1.6;
-  }
+  .banner p { color: var(--muted); font-size: 13px; line-height: 1.6; }
   .banner code {
     background: rgba(0,0,0,0.5);
     padding: 2px 8px;
@@ -410,6 +339,31 @@
     color: var(--gold);
     font-size: 12px;
   }
+  
+  .save-indicator {
+    position: fixed;
+    top: 90px;
+    right: 40px;
+    padding: 8px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--muted);
+    display: none;
+    align-items: center;
+    gap: 8px;
+    z-index: 50;
+  }
+  .save-indicator.show { display: flex; }
+  .save-indicator .spinner {
+    width: 12px; height: 12px;
+    border: 2px solid var(--gold);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -420,9 +374,14 @@
     <span class="logo-sub">Signage Control</span>
   </div>
   <div class="header-actions">
-    <button class="btn btn-sm" onclick="refreshAll()">↻ Refresh All Screens</button>
+    <button class="btn btn-sm" onclick="loadState()">↻ Refresh</button>
   </div>
 </header>
+
+<div class="save-indicator" id="saveIndicator">
+  <div class="spinner"></div>
+  <span>Saving...</span>
+</div>
 
 <div class="container">
   
@@ -432,17 +391,17 @@
     </svg>
     <div>
       <h3>How to setup a new screen</h3>
-      <p>افتح <code id="displayUrl">https://yourdomain.com/display.html</code> على الشاشة، اكتب اسم المجموعة (مثل: <code>group-a</code>)، الشاشة هتنضم تلقائياً لقائمة العرض.</p>
+      <p>افتح <code id="displayUrl"></code> على الشاشة، اكتب اسم المجموعة (مثل: <code>group-a</code>), الشاشة هتنضم تلقائياً لقائمة العرض.</p>
     </div>
   </div>
   
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('overview')">Overview</button>
-    <button class="tab" onclick="switchTab('playlists')">Playlists</button>
-    <button class="tab" onclick="switchTab('screens')">Screens</button>
+    <button class="tab active" data-tab="overview">Overview</button>
+    <button class="tab" data-tab="playlists">Playlists</button>
+    <button class="tab" data-tab="screens">Screens</button>
   </div>
   
-  <!-- ========== OVERVIEW ========== -->
+  <!-- OVERVIEW -->
   <div class="panel active" id="panel-overview">
     <div class="stats">
       <div class="stat">
@@ -467,11 +426,11 @@
     
     <h2 style="font-size:14px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">Active Groups</h2>
     <div class="groups-grid" id="groups-grid">
-      <div class="empty-state">لا توجد شاشات متصلة بعد. افتح صفحة العرض على الشاشات لتبدأ.</div>
+      <div class="empty-state">جاري التحميل...</div>
     </div>
   </div>
   
-  <!-- ========== PLAYLISTS ========== -->
+  <!-- PLAYLISTS -->
   <div class="panel" id="panel-playlists">
     <div class="playlist-section">
       <div class="playlist-header">
@@ -491,6 +450,7 @@
         <div class="upload-zone-text">اسحب الصور والفيديوهات هنا أو اضغط للاختيار</div>
         <div class="upload-zone-sub">JPG, PNG, WEBP, MP4 — Max 50MB لكل ملف</div>
         <input type="file" id="fileInput" multiple accept="image/*,video/*" hidden>
+        <div class="upload-progress" id="uploadProgress" style="width:0;"></div>
       </div>
       
       <div class="playlist-items" id="playlistItems"></div>
@@ -502,7 +462,7 @@
     </div>
   </div>
   
-  <!-- ========== SCREENS ========== -->
+  <!-- SCREENS -->
   <div class="panel" id="panel-screens">
     <div id="screensList"></div>
   </div>
@@ -513,66 +473,110 @@
 
 <script>
 // ============================================
-// CAFELAX CONTROL PANEL — Frontend Only Demo
-// (in production: replace with actual API calls)
+// CAFELAX CONTROL PANEL — Real API
 // ============================================
 
-const STORAGE_KEY = 'cafelax_admin';
-let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-  groups: { 'group-a': { name: 'group-a', playlist: [] } },
-  screens: {},
-  version: 1
-};
+const API = window.location.origin + '/api/admin';
+let state = { groups: {}, screens: {} };
+let currentPlaylist = []; // working copy للـ playlist الحالي
+let dirty = false;
 
-// Show display URL
 document.getElementById('displayUrl').textContent = window.location.origin + '/display.html';
 
-function save() {
-  data.version++;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  renderAll();
-}
-
-function toast(msg) {
+// ============================================
+// HELPERS
+// ============================================
+function toast(msg, isError) {
   const t = document.getElementById('toast');
   t.textContent = msg;
+  t.classList.toggle('error', !!isError);
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-function switchTab(name) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('panel-' + name).classList.add('active');
+function showSaving(show) {
+  document.getElementById('saveIndicator').classList.toggle('show', show);
+}
+
+async function api(path, opts = {}) {
+  const url = API + path;
+  const res = await fetch(url, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', ...opts.headers }
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: 'Network error' }));
+    throw new Error(err.error || 'Request failed');
+  }
+  return res.json();
+}
+
+// ============================================
+// TABS
+// ============================================
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ============================================
+// LOAD STATE FROM SERVER
+// ============================================
+async function loadState() {
+  try {
+    state = await api('/state');
+    renderAll();
+  } catch (err) {
+    toast('فشل التحميل: ' + err.message, true);
+  }
 }
 
 // ============================================
 // GROUPS
 // ============================================
-function addNewGroup() {
+async function addNewGroup() {
   const name = prompt('اسم المجموعة الجديدة (إنجليزي بدون مسافات):');
   if (!name) return;
-  const clean = name.trim().toLowerCase().replace(/\s+/g, '-');
-  if (data.groups[clean]) { toast('المجموعة موجودة بالفعل'); return; }
-  data.groups[clean] = { name: clean, playlist: [] };
-  save();
-  document.getElementById('groupSelector').value = clean;
-  loadPlaylist();
-  toast('تم إنشاء المجموعة: ' + clean);
+  
+  showSaving(true);
+  try {
+    const result = await api('/groups', {
+      method: 'POST',
+      body: JSON.stringify({ name })
+    });
+    await loadState();
+    document.getElementById('groupSelector').value = result.name;
+    loadPlaylist();
+    toast('✓ تم إنشاء المجموعة: ' + result.name);
+  } catch (err) {
+    toast('فشل: ' + err.message, true);
+  }
+  showSaving(false);
 }
 
 function renderGroupSelector() {
   const sel = document.getElementById('groupSelector');
   const current = sel.value;
   sel.innerHTML = '';
-  Object.keys(data.groups).forEach(g => {
+  
+  const groupNames = Object.keys(state.groups);
+  if (!groupNames.length) {
+    sel.innerHTML = '<option>لا توجد مجموعات</option>';
+    return;
+  }
+  
+  groupNames.forEach(g => {
     const opt = document.createElement('option');
     opt.value = g;
     opt.textContent = g;
     sel.appendChild(opt);
   });
-  if (current && data.groups[current]) sel.value = current;
+  
+  if (current && state.groups[current]) sel.value = current;
 }
 
 // ============================================
@@ -580,73 +584,83 @@ function renderGroupSelector() {
 // ============================================
 function loadPlaylist() {
   const groupName = document.getElementById('groupSelector').value;
-  const group = data.groups[groupName];
+  const group = state.groups[groupName];
   if (!group) return;
   
+  currentPlaylist = JSON.parse(JSON.stringify(group.playlist || []));
+  dirty = false;
+  renderPlaylist();
+}
+
+function renderPlaylist() {
   const container = document.getElementById('playlistItems');
   container.innerHTML = '';
   
-  if (!group.playlist.length) {
+  if (!currentPlaylist.length) {
     container.innerHTML = '<div class="empty-state">لا توجد عناصر بعد. ارفع صور أو فيديوهات لتبدأ.</div>';
     return;
   }
   
-  group.playlist.forEach((item, idx) => {
+  currentPlaylist.forEach((item, idx) => {
     const div = document.createElement('div');
     div.className = 'playlist-item';
-    div.draggable = true;
-    div.dataset.idx = idx;
     
-    const thumbHtml = item.type === 'video' 
-      ? `<video src="${item.url}" muted></video>`
-      : `<div class="item-thumb" style="background-image:url('${item.url}');"></div>`;
+    const thumbStyle = item.type === 'image' 
+      ? `background-image:url('${item.url}');background-size:cover;background-position:center;`
+      : '';
+    
+    const videoHtml = item.type === 'video' 
+      ? `<video src="${item.url}" muted preload="metadata"></video>` 
+      : '';
     
     div.innerHTML = `
-      <div class="item-thumb">${item.type === 'video' ? thumbHtml : ''}</div>
+      <div class="item-thumb" style="${thumbStyle}">${videoHtml}</div>
       <div class="item-info">
         <div class="item-name">${item.name || 'Untitled'}</div>
         <div class="item-meta">${item.type.toUpperCase()} · ${formatSize(item.size)}</div>
       </div>
-      <input type="number" class="duration-input" value="${item.duration / 1000}" min="1" max="60" 
-        onchange="updateDuration(${idx}, this.value)" title="Seconds">
+      <input type="number" class="duration-input" value="${item.duration / 1000}" min="1" max="120" 
+        data-idx="${idx}" title="Seconds">
       <div class="item-actions">
-        <button class="icon-btn" onclick="moveItem(${idx}, -1)" title="Up">▲</button>
-        <button class="icon-btn" onclick="moveItem(${idx}, 1)" title="Down">▼</button>
-        <button class="icon-btn danger" onclick="removeItem(${idx})" title="Delete">✕</button>
+        <button class="icon-btn" data-action="up" data-idx="${idx}" title="Up">▲</button>
+        <button class="icon-btn" data-action="down" data-idx="${idx}" title="Down">▼</button>
+        <button class="icon-btn danger" data-action="remove" data-idx="${idx}" title="Delete">✕</button>
       </div>
     `;
     
-    if (item.type !== 'video') {
-      div.querySelector('.item-thumb').style.backgroundImage = `url('${item.url}')`;
-      div.querySelector('.item-thumb').style.backgroundSize = 'cover';
-    }
-    
     container.appendChild(div);
   });
-}
-
-function updateDuration(idx, seconds) {
-  const groupName = document.getElementById('groupSelector').value;
-  data.groups[groupName].playlist[idx].duration = Math.max(1, parseInt(seconds)) * 1000;
-  save();
-}
-
-function moveItem(idx, dir) {
-  const groupName = document.getElementById('groupSelector').value;
-  const list = data.groups[groupName].playlist;
-  const newIdx = idx + dir;
-  if (newIdx < 0 || newIdx >= list.length) return;
-  [list[idx], list[newIdx]] = [list[newIdx], list[idx]];
-  save();
-  loadPlaylist();
-}
-
-function removeItem(idx) {
-  if (!confirm('حذف العنصر؟')) return;
-  const groupName = document.getElementById('groupSelector').value;
-  data.groups[groupName].playlist.splice(idx, 1);
-  save();
-  loadPlaylist();
+  
+  // Bind events
+  container.querySelectorAll('.duration-input').forEach(input => {
+    input.addEventListener('change', (e) => {
+      const idx = +e.target.dataset.idx;
+      currentPlaylist[idx].duration = Math.max(1, parseInt(e.target.value)) * 1000;
+      dirty = true;
+    });
+  });
+  
+  container.querySelectorAll('.icon-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const idx = +e.currentTarget.dataset.idx;
+      const action = e.currentTarget.dataset.action;
+      if (action === 'up' && idx > 0) {
+        [currentPlaylist[idx], currentPlaylist[idx-1]] = [currentPlaylist[idx-1], currentPlaylist[idx]];
+        dirty = true;
+        renderPlaylist();
+      } else if (action === 'down' && idx < currentPlaylist.length - 1) {
+        [currentPlaylist[idx], currentPlaylist[idx+1]] = [currentPlaylist[idx+1], currentPlaylist[idx]];
+        dirty = true;
+        renderPlaylist();
+      } else if (action === 'remove') {
+        if (confirm('حذف العنصر؟')) {
+          currentPlaylist.splice(idx, 1);
+          dirty = true;
+          renderPlaylist();
+        }
+      }
+    });
+  });
 }
 
 function formatSize(bytes) {
@@ -656,10 +670,11 @@ function formatSize(bytes) {
 }
 
 // ============================================
-// FILE UPLOAD
+// FILE UPLOAD (REAL API)
 // ============================================
 const uploadZone = document.getElementById('uploadZone');
 const fileInput = document.getElementById('fileInput');
+const uploadProgress = document.getElementById('uploadProgress');
 
 uploadZone.addEventListener('dragover', (e) => {
   e.preventDefault();
@@ -674,49 +689,93 @@ uploadZone.addEventListener('drop', (e) => {
 fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
 
 async function handleFiles(files) {
-  const groupName = document.getElementById('groupSelector').value;
-  const group = data.groups[groupName];
-  
-  for (const file of files) {
-    // في الـ production: ارفع للسيرفر واحصل على URL
-    // هنا: نستخدم Object URL للعرض فقط (مش هيفضل بعد الريفريش)
-    const url = URL.createObjectURL(file);
-    
-    group.playlist.push({
-      id: 'item_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
-      name: file.name,
-      url: url,
-      type: file.type.startsWith('video/') ? 'video' : 'image',
-      size: file.size,
-      duration: file.type.startsWith('video/') ? 10000 : 5000,
-      uploaded: Date.now()
-    });
+  if (!files.length) return;
+  if (!Object.keys(state.groups).length) {
+    toast('أنشئ مجموعة أولاً', true);
+    return;
   }
   
-  save();
-  loadPlaylist();
-  toast(`تمت إضافة ${files.length} ملف`);
+  const formData = new FormData();
+  for (const file of files) {
+    formData.append('files', file);
+  }
+  
+  uploadProgress.style.width = '0%';
+  uploadZone.style.pointerEvents = 'none';
+  
+  try {
+    const xhr = new XMLHttpRequest();
+    
+    const result = await new Promise((resolve, reject) => {
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) {
+          uploadProgress.style.width = (e.loaded / e.total * 100) + '%';
+        }
+      });
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(JSON.parse(xhr.responseText));
+        } else {
+          reject(new Error('Upload failed'));
+        }
+      });
+      xhr.addEventListener('error', () => reject(new Error('Network error')));
+      xhr.open('POST', API + '/upload');
+      xhr.send(formData);
+    });
+    
+    // أضف الملفات للـ playlist الحالي
+    currentPlaylist.push(...result.files);
+    dirty = true;
+    renderPlaylist();
+    
+    toast(`✓ تم رفع ${files.length} ملف — اضغط SAVE للنشر`);
+  } catch (err) {
+    toast('فشل الرفع: ' + err.message, true);
+  } finally {
+    uploadProgress.style.width = '0%';
+    uploadZone.style.pointerEvents = 'auto';
+    fileInput.value = '';
+  }
 }
 
-function savePlaylist() {
-  // في الـ production: ارفع الـ playlist للـ API
-  toast('✓ تم الحفظ والنشر — الشاشات هتتحدث خلال 30 ثانية');
+// ============================================
+// SAVE PLAYLIST
+// ============================================
+async function savePlaylist() {
+  const groupName = document.getElementById('groupSelector').value;
+  if (!groupName) { toast('اختر مجموعة أولاً', true); return; }
+  
+  showSaving(true);
+  try {
+    await api(`/groups/${encodeURIComponent(groupName)}/playlist`, {
+      method: 'PUT',
+      body: JSON.stringify({ playlist: currentPlaylist })
+    });
+    dirty = false;
+    await loadState();
+    toast('✓ تم النشر — الشاشات هتتحدث خلال 30 ثانية');
+  } catch (err) {
+    toast('فشل الحفظ: ' + err.message, true);
+  }
+  showSaving(false);
 }
 
 function previewPlaylist() {
   const groupName = document.getElementById('groupSelector').value;
-  window.open(`/display.html?preview=${groupName}`, '_blank', 'width=400,height=700');
+  if (!groupName) return;
+  window.open(`/display.html?preview=${encodeURIComponent(groupName)}`, '_blank', 'width=400,height=700');
 }
 
 // ============================================
 // OVERVIEW
 // ============================================
 function renderOverview() {
-  const totalGroups = Object.keys(data.groups).length;
-  const totalMedia = Object.values(data.groups).reduce((s, g) => s + g.playlist.length, 0);
-  const screens = Object.keys(data.screens);
+  const totalGroups = Object.keys(state.groups).length;
+  const totalMedia = Object.values(state.groups).reduce((s, g) => s + (g.playlist || []).length, 0);
+  const screens = Object.keys(state.screens);
   const activeScreens = screens.filter(s => 
-    data.screens[s].lastSeen && (Date.now() - data.screens[s].lastSeen < 5 * 60 * 1000)
+    state.screens[s].lastSeen && (Date.now() - state.screens[s].lastSeen < 5 * 60 * 1000)
   );
   
   document.getElementById('stat-groups').textContent = totalGroups;
@@ -725,43 +784,74 @@ function renderOverview() {
   document.getElementById('stat-screens-sub').textContent = `من إجمالي ${screens.length}`;
   
   const grid = document.getElementById('groups-grid');
-  if (!totalGroups) return;
+  if (!totalGroups) {
+    grid.innerHTML = '<div class="empty-state">لا توجد مجموعات بعد. روح لـ Playlists وأنشئ واحدة.</div>';
+    return;
+  }
   
   grid.innerHTML = '';
-  Object.values(data.groups).forEach(group => {
-    const groupScreens = screens.filter(s => data.screens[s].group === group.name);
+  Object.entries(state.groups).forEach(([groupName, group]) => {
+    const groupScreens = screens.filter(s => state.screens[s].group === groupName);
     const card = document.createElement('div');
     card.className = 'group-card';
     card.innerHTML = `
       <div class="group-header">
-        <div class="group-name">${group.name}</div>
-        <div class="group-count">${group.playlist.length} items</div>
+        <div class="group-name">${groupName}</div>
+        <div class="group-count">${(group.playlist || []).length} items</div>
       </div>
       <div class="group-screens">
         ${groupScreens.length 
           ? groupScreens.map(s => {
-              const isOnline = (Date.now() - data.screens[s].lastSeen) < 5 * 60 * 1000;
+              const isOnline = (Date.now() - state.screens[s].lastSeen) < 5 * 60 * 1000;
               return `<div class="screen-chip ${isOnline ? '' : 'offline'}">
-                <div class="dot"></div>${s}
+                <div class="dot"></div>${s.slice(0, 8)}
               </div>`;
             }).join('')
           : '<div style="font-size:12px;color:var(--muted);">لا توجد شاشات متصلة</div>'
         }
       </div>
-      <button class="btn btn-sm" onclick="editGroup('${group.name}')">Edit Playlist →</button>
+      <button class="btn btn-sm" data-group="${groupName}">Edit Playlist →</button>
     `;
+    card.querySelector('button').addEventListener('click', () => {
+      document.querySelector('[data-tab="playlists"]').click();
+      document.getElementById('groupSelector').value = groupName;
+      loadPlaylist();
+    });
     grid.appendChild(card);
   });
 }
 
-function editGroup(name) {
-  document.querySelector('.tab:nth-child(2)').click();
-  document.getElementById('groupSelector').value = name;
-  loadPlaylist();
-}
-
-function refreshAll() {
-  toast('✓ تم إرسال أمر التحديث لجميع الشاشات');
+// ============================================
+// SCREENS LIST
+// ============================================
+function renderScreens() {
+  const container = document.getElementById('screensList');
+  const screens = Object.entries(state.screens);
+  
+  if (!screens.length) {
+    container.innerHTML = '<div class="empty-state">لا توجد شاشات متصلة بعد.</div>';
+    return;
+  }
+  
+  container.innerHTML = `
+    <div class="playlist-section">
+      <div class="playlist-title" style="margin-bottom:20px;">Connected Screens</div>
+      ${screens.map(([id, screen]) => {
+        const isOnline = (Date.now() - screen.lastSeen) < 5 * 60 * 1000;
+        const lastSeenMins = Math.floor((Date.now() - screen.lastSeen) / 60000);
+        return `
+          <div class="playlist-item" style="grid-template-columns:auto 1fr auto;">
+            <div class="dot" style="width:10px;height:10px;border-radius:50%;background:${isOnline ? '#4ade80' : '#666'};"></div>
+            <div class="item-info">
+              <div class="item-name">${id}</div>
+              <div class="item-meta">Group: ${screen.group} · IP: ${screen.ip || '—'}</div>
+            </div>
+            <div class="item-meta">${isOnline ? 'Online' : `Offline ${lastSeenMins}m ago`}</div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
 }
 
 // ============================================
@@ -769,14 +859,28 @@ function refreshAll() {
 // ============================================
 function renderAll() {
   renderGroupSelector();
+  if (Object.keys(state.groups).length && !document.getElementById('groupSelector').value) {
+    document.getElementById('groupSelector').value = Object.keys(state.groups)[0];
+  }
   loadPlaylist();
   renderOverview();
+  renderScreens();
 }
 
-renderAll();
+loadState();
 
-// Auto-refresh overview every 30 sec (in production: poll /api/screens)
-setInterval(renderOverview, 30000);
+// Auto-refresh every 30 seconds
+setInterval(() => {
+  if (!dirty) loadState();
+}, 30000);
+
+// Warn before leaving with unsaved changes
+window.addEventListener('beforeunload', (e) => {
+  if (dirty) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 </script>
 
 </body>

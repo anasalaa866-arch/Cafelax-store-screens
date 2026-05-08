@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAFELAX Display</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%;
+    background: #000;
+    overflow: hidden;
+    font-family: -apple-system, sans-serif;
+    color: #fff;
+    cursor: none;
+  }
+  #stage {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
+    background-size: cover;
+    background-position: center;
+    background-color: #000;
+  }
+  .slide.active { opacity: 1; }
+  .slide video, .slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  
+  /* Setup screen */
+  #setup {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 40px;
+  }
+  #setup.hidden { display: none; }
+  .setup-box {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 16px;
+    padding: 60px;
+    max-width: 500px;
+    width: 100%;
+    backdrop-filter: blur(10px);
+  }
+  .setup-box h1 {
+    color: #d4af37;
+    font-size: 28px;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+  .setup-box p {
+    color: #aaa;
+    margin-bottom: 30px;
+    font-size: 14px;
+  }
+  .setup-box label {
+    display: block;
+    color: #ccc;
+    font-size: 13px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .setup-box input {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    margin-bottom: 20px;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .setup-box input:focus { border-color: #d4af37; }
+  .setup-box button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #d4af37, #b8941f);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: transform 0.1s;
+  }
+  .setup-box button:active { transform: scale(0.98); }
+  
+  /* Status indicator (small, corner) */
+  #status {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    padding: 6px 12px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 20px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  #status.show { opacity: 1; }
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+  }
+  .status-dot.offline { background: #f87171; }
+  .status-dot.syncing { 
+    background: #fbbf24;
+    animation: pulse 1s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  
+  /* Loading state */
+  #loading {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    flex-direction: column;
+    gap: 30px;
+  }
+  #loading.hidden { display: none; }
+  .logo-loader {
+    color: #d4af37;
+    font-size: 32px;
+    letter-spacing: 8px;
+    font-weight: 300;
+  }
+  .loader-bar {
+    width: 200px;
+    height: 2px;
+    background: rgba(212,175,55,0.2);
+    overflow: hidden;
+    border-radius: 2px;
+  }
+  .loader-bar::after {
+    content: '';
+    display: block;
+    width: 30%;
+    height: 100%;
+    background: #d4af37;
+    animation: loader 1.5s ease-in-out infinite;
+  }
+  @keyframes loader {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Setup screen (first time only) -->
+<div id="setup">
+  <div class="setup-box">
+    <h1>CAFELAX SIGNAGE</h1>
+    <p>اكتب اسم الشاشة أو رقم المجموعة</p>
+    <label>Screen / Group Name</label>
+    <input type="text" id="groupInput" placeholder="مثال: screen-1 أو group-a" autofocus>
+    <button onclick="saveSetup()">START DISPLAY</button>
+  </div>
+</div>
+
+<!-- Loading -->
+<div id="loading" class="hidden">
+  <div class="logo-loader">CAFELAX</div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- Display stage -->
+<div id="stage"></div>
+
+<!-- Status -->
+<div id="status">
+  <div class="status-dot" id="statusDot"></div>
+  <span id="statusText">Online</span>
+</div>
+
+<script>
+// ============================================
+// CAFELAX DIGITAL SIGNAGE - DISPLAY CLIENT
+// ============================================
+
+const CONFIG = {
+  // ⚠️ غيّر دا للرابط الفعلي بتاع API
+  API_URL: window.location.origin + '/api',
+  POLL_INTERVAL: 30000,        // كل 30 ثانية يتأكد من التحديثات
+  RETRY_INTERVAL: 5000,        // لو فيه مشكلة يحاول كل 5 ثواني
+  HEARTBEAT_INTERVAL: 60000,   // كل دقيقة يبعت نبض للسيرفر
+};
+
+let state = {
+  groupName: localStorage.getItem('cafelax_group') || null,
+  playlist: JSON.parse(localStorage.getItem('cafelax_playlist') || '[]'),
+  playlistVersion: localStorage.getItem('cafelax_version') || '0',
+  serverTimeOffset: 0,
+  isOnline: navigator.onLine,
+  currentSlideIndex: 0,
+};
+
+// ============================================
+// SETUP
+// ============================================
+function saveSetup() {
+  const name = document.getElementById('groupInput').value.trim();
+  if (!name) return;
+  localStorage.setItem('cafelax_group', name);
+  state.groupName = name;
+  document.getElementById('setup').classList.add('hidden');
+  init();
+}
+
+if (state.groupName) {
+  document.getElementById('setup').classList.add('hidden');
+  init();
+}
+
+// ============================================
+// MAIN INIT
+// ============================================
+async function init() {
+  showLoading(true);
+  await syncWithServer();
+  showLoading(false);
+  startPlayback();
+  startPolling();
+  startHeartbeat();
+  
+  // Online/offline detection
+  window.addEventListener('online', () => {
+    state.isOnline = true;
+    updateStatus('online');
+    syncWithServer();
+  });
+  window.addEventListener('offline', () => {
+    state.isOnline = false;
+    updateStatus('offline');
+  });
+  
+  // Auto-recovery: لو الصفحة هنّجت أو حصلت مشكلة
+  setInterval(() => {
+    // Watchdog: لو الـ playback وقف لأي سبب نعيد التشغيل
+    if (!window._lastSlideTime || Date.now() - window._lastSlideTime > 120000) {
+      console.warn('Watchdog: restarting playback');
+      startPlayback();
+    }
+  }, 30000);
+  
+  // Refresh الصفحة كل 6 ساعات (تنظيف للذاكرة)
+  setTimeout(() => location.reload(), 6 * 60 * 60 * 1000);
+}
+
+function showLoading(show) {
+  document.getElementById('loading').classList.toggle('hidden', !show);
+}
+
+function updateStatus(status) {
+  const dot = document.getElementById('statusDot');
+  const text = document.getElementById('statusText');
+  const el = document.getElementById('status');
+  el.classList.add('show');
+  
+  dot.className = 'status-dot ' + (status === 'online' ? '' : status);
+  text.textContent = {
+    online: 'Online',
+    offline: 'Offline (Cached)',
+    syncing: 'Syncing...'
+  }[status] || status;
+  
+  // اخفي الـ status بعد 3 ثواني
+  clearTimeout(window._statusTimeout);
+  window._statusTimeout = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ============================================
+// SYNC WITH SERVER
+// ============================================
+async function syncWithServer() {
+  if (!state.isOnline) return;
+  updateStatus('syncing');
+  
+  try {
+    const startTime = Date.now();
+    const res = await fetch(`${CONFIG.API_URL}/playlist?group=${encodeURIComponent(state.groupName)}&v=${state.playlistVersion}`, {
+      cache: 'no-store'
+    });
+    const latency = (Date.now() - startTime) / 2;
+    
+    if (!res.ok) throw new Error('Server error');
+    
+    const data = await res.json();
+    
+    // احسب فرق التوقيت مع السيرفر
+    if (data.serverTime) {
+      state.serverTimeOffset = data.serverTime + latency - Date.now();
+    }
+    
+    // لو فيه نسخة جديدة
+    if (data.version && data.version !== state.playlistVersion) {
+      console.log('New playlist version:', data.version);
+      state.playlist = data.playlist || [];
+      state.playlistVersion = data.version;
+      localStorage.setItem('cafelax_playlist', JSON.stringify(state.playlist));
+      localStorage.setItem('cafelax_version', data.version);
+      
+      // حمّل الصور الجديدة في الكاش
+      await preloadAssets(state.playlist);
+    }
+    
+    updateStatus('online');
+  } catch (err) {
+    console.warn('Sync failed:', err.message);
+    updateStatus('offline');
+  }
+}
+
+// ============================================
+// PRELOAD ASSETS (Cache for offline)
+// ============================================
+async function preloadAssets(playlist) {
+  const promises = playlist.map(item => {
+    return new Promise((resolve) => {
+      if (item.type === 'video') {
+        const v = document.createElement('video');
+        v.src = item.url;
+        v.preload = 'auto';
+        v.onloadeddata = resolve;
+        v.onerror = resolve;
+      } else {
+        const img = new Image();
+        img.src = item.url;
+        img.onload = resolve;
+        img.onerror = resolve;
+      }
+    });
+  });
+  await Promise.all(promises);
+}
+
+// ============================================
+// PLAYBACK ENGINE (Synchronized)
+// ============================================
+function getServerTime() {
+  return Date.now() + state.serverTimeOffset;
+}
+
+function calculateCurrentSlide() {
+  if (!state.playlist.length) return null;
+  
+  const totalDuration = state.playlist.reduce((sum, item) => sum + (item.duration || 5000), 0);
+  if (totalDuration === 0) return null;
+  
+  // التزامن: كل الشاشات في نفس المجموعة بتحسب من نفس النقطة (server time)
+  const serverNow = getServerTime();
+  const cyclePosition = serverNow % totalDuration;
+  
+  let accumulated = 0;
+  for (let i = 0; i < state.playlist.length; i++) {
+    const dur = state.playlist[i].duration || 5000;
+    if (cyclePosition < accumulated + dur) {
+      return {
+        index: i,
+        item: state.playlist[i],
+        elapsed: cyclePosition - accumulated,
+        remaining: dur - (cyclePosition - accumulated)
+      };
+    }
+    accumulated += dur;
+  }
+  return null;
+}
+
+function startPlayback() {
+  if (!state.playlist.length) {
+    showEmptyState();
+    setTimeout(startPlayback, 5000);
+    return;
+  }
+  
+  const stage = document.getElementById('stage');
+  
+  function showNextSlide() {
+    window._lastSlideTime = Date.now();
+    
+    const current = calculateCurrentSlide();
+    if (!current) {
+      setTimeout(showNextSlide, 1000);
+      return;
+    }
+    
+    // امسح الـ slides القديمة (نخلي الحالية والجديدة بس)
+    const oldSlides = stage.querySelectorAll('.slide');
+    if (oldSlides.length > 2) {
+      for (let i = 0; i < oldSlides.length - 1; i++) {
+        oldSlides[i].remove();
+      }
+    }
+    
+    // أنشئ slide جديد
+    const slide = document.createElement('div');
+    slide.className = 'slide';
+    
+    if (current.item.type === 'video') {
+      const video = document.createElement('video');
+      video.src = current.item.url;
+      video.muted = true;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.loop = false;
+      slide.appendChild(video);
+      video.play().catch(() => {});
+    } else {
+      slide.style.backgroundImage = `url('${current.item.url}')`;
+    }
+    
+    stage.appendChild(slide);
+    
+    // فعّل الـ slide الجديد
+    requestAnimationFrame(() => {
+      // اخفي القديم
+      stage.querySelectorAll('.slide.active').forEach(s => {
+        if (s !== slide) s.classList.remove('active');
+      });
+      slide.classList.add('active');
+      
+      // امسح القديم بعد الـ transition
+      setTimeout(() => {
+        stage.querySelectorAll('.slide:not(.active)').forEach(s => s.remove());
+      }, 800);
+    });
+    
+    // جدول الـ slide اللي بعده
+    setTimeout(showNextSlide, current.remaining);
+  }
+  
+  showNextSlide();
+}
+
+function showEmptyState() {
+  const stage = document.getElementById('stage');
+  stage.innerHTML = `
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;background:#000;">
+      <div style="color:#d4af37;font-size:48px;letter-spacing:8px;font-weight:300;">CAFELAX</div>
+      <div style="color:#666;font-size:14px;">في انتظار المحتوى... (${state.groupName})</div>
+    </div>
+  `;
+}
+
+// ============================================
+// POLLING & HEARTBEAT
+// ============================================
+function startPolling() {
+  setInterval(() => {
+    if (state.isOnline) syncWithServer();
+  }, CONFIG.POLL_INTERVAL);
+}
+
+function startHeartbeat() {
+  const sendHeartbeat = async () => {
+    if (!state.isOnline) return;
+    try {
+      await fetch(`${CONFIG.API_URL}/heartbeat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          group: state.groupName,
+          version: state.playlistVersion,
+          timestamp: Date.now()
+        })
+      });
+    } catch (e) { /* ignore */ }
+  };
+  sendHeartbeat();
+  setInterval(sendHeartbeat, CONFIG.HEARTBEAT_INTERVAL);
+}
+
+// ============================================
+// KEYBOARD SHORTCUTS (للصيانة)
+// ============================================
+document.addEventListener('keydown', (e) => {
+  // Ctrl+R = إعادة تشغيل
+  if (e.ctrlKey && e.key === 'r') {
+    e.preventDefault();
+    location.reload();
+  }
+  // Ctrl+Shift+S = إعادة الإعدادات
+  if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+    if (confirm('Reset display settings?')) {
+      localStorage.clear();
+      location.reload();
+    }
+  }
+  // Ctrl+I = اظهار الـ status
+  if (e.ctrlKey && e.key === 'i') {
+    document.getElementById('status').classList.add('show');
+    setTimeout(() => document.getElementById('status').classList.remove('show'), 5000);
+  }
+});
+
+// ============================================
+// SERVICE WORKER (Offline Cache)
+// ============================================
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(err => 
+    console.warn('SW failed:', err)
+  );
+}
+</script>
+</body>
+</html>

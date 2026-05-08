@@ -1,9 +1,9 @@
 // CAFELAX Signage Backend
-// Node.js + Express - بسيط ومباشر
+// Node.js + Express
 // 
 // التشغيل:
-//   npm install express multer
-//   node server.js
+//   npm install
+//   npm start
 
 const express = require('express');
 const multer = require('multer');
@@ -25,11 +25,11 @@ if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
 // ============================================
-// STATE (in-memory + JSON file backup)
+// STATE
 // ============================================
 let state = {
-  groups: {},      // { 'group-a': { playlist: [...], version: '...' } }
-  screens: {},     // { 'screen-1': { group, lastSeen, version } }
+  groups: {},
+  screens: {},
 };
 
 function loadState() {
@@ -50,13 +50,26 @@ loadState();
 // MIDDLEWARE
 // ============================================
 app.use(express.json({ limit: '10mb' }));
+
+// CORS for cross-origin requests
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Screen-Id');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  next();
+});
+
+// Serve uploads
 app.use('/uploads', express.static(UPLOADS_DIR, {
   maxAge: '30d',
   setHeaders: (res) => {
     res.setHeader('Cache-Control', 'public, max-age=2592000, immutable');
   }
 }));
-app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve all HTML/JS files from root directory
+app.use(express.static(__dirname));
 
 // File upload config
 const storage = multer.diskStorage({
@@ -69,15 +82,13 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ 
   storage,
-  limits: { fileSize: 50 * 1024 * 1024 } // 50MB max
+  limits: { fileSize: 50 * 1024 * 1024 }
 });
 
 // ============================================
-// API: DISPLAY ENDPOINTS (الشاشات بتنادي عليها)
+// API: DISPLAY ENDPOINTS
 // ============================================
 
-// GET /api/playlist?group=group-a&v=current_version
-// الشاشة بتسأل: هل في تحديث؟
 app.get('/api/playlist', (req, res) => {
   const groupName = req.query.group;
   const clientVersion = req.query.v;
@@ -93,7 +104,6 @@ app.get('/api/playlist', (req, res) => {
     });
   }
   
-  // لو نفس النسخة، رد فاضي (توفير في الباندويث)
   const response = {
     version: group.version,
     serverTime: Date.now()
@@ -106,13 +116,10 @@ app.get('/api/playlist', (req, res) => {
   res.json(response);
 });
 
-// POST /api/heartbeat
-// الشاشة بتبعت كل دقيقة "أنا شغالة"
 app.post('/api/heartbeat', (req, res) => {
-  const { group, version, timestamp } = req.body;
+  const { group, version } = req.body;
   if (!group) return res.status(400).json({ error: 'group required' });
   
-  // استخدم IP+UserAgent كمعرف للشاشة
   const screenId = req.headers['x-screen-id'] || 
     crypto.createHash('md5').update(req.ip + req.headers['user-agent']).digest('hex').slice(0, 12);
   
@@ -128,15 +135,13 @@ app.post('/api/heartbeat', (req, res) => {
 });
 
 // ============================================
-// API: ADMIN ENDPOINTS (لوحة التحكم)
+// API: ADMIN ENDPOINTS
 // ============================================
 
-// GET /api/admin/state
 app.get('/api/admin/state', (req, res) => {
   res.json(state);
 });
 
-// POST /api/admin/upload
 app.post('/api/admin/upload', upload.array('files'), (req, res) => {
   const files = req.files.map(f => ({
     id: 'item_' + Date.now() + '_' + crypto.randomBytes(3).toString('hex'),
@@ -150,7 +155,6 @@ app.post('/api/admin/upload', upload.array('files'), (req, res) => {
   res.json({ files });
 });
 
-// PUT /api/admin/groups/:name/playlist
 app.put('/api/admin/groups/:name/playlist', (req, res) => {
   const groupName = req.params.name;
   const { playlist } = req.body;
@@ -174,7 +178,6 @@ app.put('/api/admin/groups/:name/playlist', (req, res) => {
   });
 });
 
-// POST /api/admin/groups
 app.post('/api/admin/groups', (req, res) => {
   const { name } = req.body;
   if (!name) return res.status(400).json({ error: 'name required' });
@@ -189,7 +192,6 @@ app.post('/api/admin/groups', (req, res) => {
   res.json({ ok: true, name: clean });
 });
 
-// DELETE /api/admin/groups/:name
 app.delete('/api/admin/groups/:name', (req, res) => {
   delete state.groups[req.params.name];
   saveState();
@@ -197,11 +199,13 @@ app.delete('/api/admin/groups/:name', (req, res) => {
 });
 
 // ============================================
-// SERVE FRONTEND
+// ROUTES
 // ============================================
-app.get('/', (req, res) => res.redirect('/admin.html'));
 
-// Cleanup: remove offline screens older than 24h
+app.get('/', (req, res) => res.redirect('/admin.html'));
+app.get('/health', (req, res) => res.json({ status: 'ok', time: Date.now() }));
+
+// Cleanup
 setInterval(() => {
   const cutoff = Date.now() - 24 * 60 * 60 * 1000;
   Object.keys(state.screens).forEach(id => {
@@ -210,16 +214,8 @@ setInterval(() => {
     }
   });
   saveState();
-}, 60 * 60 * 1000); // كل ساعة
+}, 60 * 60 * 1000);
 
-app.listen(PORT, () => {
-  console.log(`
-  ╔═══════════════════════════════════════╗
-  ║   CAFELAX SIGNAGE SERVER              ║
-  ║                                       ║
-  ║   Admin:    http://localhost:${PORT}/admin.html
-  ║   Display:  http://localhost:${PORT}/display.html
-  ║                                       ║
-  ╚═══════════════════════════════════════╝
-  `);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`CAFELAX Signage running on port ${PORT}`);
 });

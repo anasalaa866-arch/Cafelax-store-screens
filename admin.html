@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CAFELAX Signage — Control Panel</title>
+<title>CAFELAX Signage Control</title>
 <style>
   :root {
     --gold: #d4af37;
@@ -14,6 +14,8 @@
     --border: rgba(212,175,55,0.15);
     --text: #f5f5f5;
     --muted: #888;
+    --green: #4ade80;
+    --red: #f87171;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -38,7 +40,6 @@
     align-items: center;
     justify-content: space-between;
   }
-  .logo { display: flex; align-items: baseline; gap: 12px; }
   .logo-text {
     font-size: 22px;
     font-weight: 300;
@@ -50,6 +51,7 @@
     color: var(--muted);
     letter-spacing: 3px;
     text-transform: uppercase;
+    margin-left: 12px;
   }
   
   .container { max-width: 1400px; margin: 0 auto; padding: 40px; }
@@ -77,79 +79,20 @@
   }
   .tab:hover { color: var(--text); }
   .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab .badge {
+    display: inline-block;
+    background: rgba(212,175,55,0.2);
+    color: var(--gold);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    margin-left: 6px;
+  }
   
   .panel { display: none; }
   .panel.active { display: block; }
   
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-  .stat {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 24px;
-    border-radius: 12px;
-  }
-  .stat-label {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .stat-value { font-size: 32px; font-weight: 300; color: var(--gold); }
-  .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
-  
-  .groups-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 20px;
-  }
-  .group-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px;
-  }
-  .group-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  .group-name { font-size: 18px; font-weight: 500; color: var(--gold); }
-  .group-count {
-    font-size: 11px;
-    color: var(--muted);
-    background: rgba(212,175,55,0.1);
-    padding: 4px 10px;
-    border-radius: 12px;
-  }
-  .group-screens {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 16px;
-  }
-  .screen-chip {
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 8px;
-    background: var(--surface-2);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .screen-chip .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #4ade80;
-  }
-  .screen-chip.offline .dot { background: #666; }
-  
+  /* Buttons */
   .btn {
     padding: 12px 22px;
     border: 1px solid var(--border);
@@ -176,15 +119,33 @@
   }
   .btn-primary:hover { transform: translateY(-1px); }
   .btn-sm { padding: 8px 14px; font-size: 12px; }
+  .btn-danger:hover { border-color: var(--red); color: var(--red); }
   
-  .playlist-section {
+  .icon-btn {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .icon-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .icon-btn.danger:hover { border-color: var(--red); color: var(--red); }
+  
+  /* Section */
+  .section {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 32px;
     margin-bottom: 24px;
   }
-  .playlist-header {
+  .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -192,23 +153,25 @@
     flex-wrap: wrap;
     gap: 16px;
   }
-  .playlist-title { font-size: 20px; color: var(--gold); letter-spacing: 1px; }
-  
-  .group-selector {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 14px;
-    min-width: 200px;
+  .section-title { 
+    font-size: 20px; 
+    color: var(--gold); 
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-subtitle {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 4px;
   }
   
+  /* Upload zone */
   .upload-zone {
     border: 2px dashed var(--border);
     border-radius: 12px;
-    padding: 50px;
+    padding: 40px;
     text-align: center;
     cursor: pointer;
     transition: all 0.2s;
@@ -219,10 +182,6 @@
     border-color: var(--gold);
     background: rgba(212,175,55,0.03);
   }
-  .upload-zone svg { color: var(--gold); margin-bottom: 12px; }
-  .upload-zone-text { font-size: 16px; margin-bottom: 6px; }
-  .upload-zone-sub { font-size: 12px; color: var(--muted); }
-  
   .upload-progress {
     position: absolute;
     bottom: 0; left: 0;
@@ -232,163 +191,226 @@
     border-radius: 0 0 12px 12px;
   }
   
-  .playlist-items { display: flex; flex-direction: column; gap: 10px; }
-  .playlist-item {
+  /* ============================================
+     MEDIA LIBRARY
+     ============================================ */
+  .library-toolbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .search-input {
+    flex: 1;
+    min-width: 200px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  
+  .library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  
+  .media-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.15s;
+    cursor: pointer;
+  }
+  .media-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+  .media-card.selected {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(212,175,55,0.3);
+  }
+  
+  .media-thumb {
+    width: 100%;
+    aspect-ratio: 16/10;
+    background: #000;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .media-thumb video { 
+    width: 100%; height: 100%; 
+    object-fit: cover; 
+  }
+  .media-thumb .video-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  
+  .media-info {
+    padding: 12px;
+  }
+  .media-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 4px;
+  }
+  .media-meta {
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+  }
+  .media-dimensions {
+    color: var(--gold);
+    font-family: monospace;
+  }
+  
+  .media-actions {
+    display: flex;
+    gap: 6px;
+    padding: 8px 12px;
+    border-top: 1px solid var(--border);
+    background: rgba(0,0,0,0.2);
+  }
+  
+  /* ============================================
+     PLAYLISTS
+     ============================================ */
+  .playlists-list {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  
+  .playlist-sidebar {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    position: sticky;
+    top: 100px;
+  }
+  
+  .playlist-list-item {
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 4px;
+    transition: all 0.15s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .playlist-list-item:hover {
+    background: rgba(212,175,55,0.05);
+  }
+  .playlist-list-item.active {
+    background: rgba(212,175,55,0.15);
+    color: var(--gold);
+  }
+  .playlist-list-item .pl-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .playlist-list-item .pl-count {
+    font-size: 11px;
+    color: var(--muted);
+    background: rgba(0,0,0,0.4);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  
+  .playlist-editor {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  
+  .playlist-name-input {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--gold);
+    font-size: 22px;
+    font-family: inherit;
+    padding: 8px 12px;
+    border-radius: 6px;
+    width: 100%;
+    transition: border 0.15s;
+  }
+  .playlist-name-input:hover { border-color: var(--border); }
+  .playlist-name-input:focus { outline: none; border-color: var(--gold); }
+  
+  .playlist-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  
+  .playlist-item-row {
     background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 12px;
+    padding: 10px;
     display: grid;
-    grid-template-columns: 80px 1fr auto auto;
+    grid-template-columns: auto 64px 1fr auto auto;
     align-items: center;
-    gap: 16px;
-    transition: border 0.2s;
+    gap: 12px;
   }
-  .playlist-item:hover { border-color: var(--gold); }
-  
-  .item-thumb {
-    width: 80px; height: 60px;
+  .playlist-item-row .order-num {
+    color: var(--muted);
+    font-size: 12px;
+    width: 24px;
+    text-align: center;
+  }
+  .playlist-item-row .item-thumb {
+    width: 64px; height: 48px;
     background: #000;
-    border-radius: 6px;
+    border-radius: 4px;
     background-size: cover;
     background-position: center;
-    overflow: hidden;
   }
-  .item-thumb video { width: 100%; height: 100%; object-fit: cover; }
-  
-  .item-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-  .item-name { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .item-meta { font-size: 11px; color: var(--muted); }
+  .playlist-item-row .item-thumb video { 
+    width: 100%; height: 100%; 
+    object-fit: cover;
+  }
   
   .duration-input {
     background: var(--bg);
     border: 1px solid var(--border);
     color: var(--text);
-    padding: 8px 12px;
+    padding: 6px 10px;
     border-radius: 6px;
-    width: 80px;
+    width: 60px;
     font-family: inherit;
     text-align: center;
-  }
-  .duration-input:focus { outline: none; border-color: var(--gold); }
-  
-  .item-actions { display: flex; gap: 6px; }
-  .icon-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    width: 32px; height: 32px;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.15s;
-  }
-  .icon-btn:hover { border-color: var(--gold); color: var(--gold); }
-  .icon-btn.danger:hover { border-color: #f87171; color: #f87171; }
-  
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--muted);
+    font-size: 13px;
   }
   
-  .toast {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: var(--surface);
-    border: 1px solid var(--gold);
-    color: var(--text);
-    padding: 14px 24px;
-    border-radius: 10px;
-    font-size: 14px;
-    z-index: 1000;
-    transition: transform 0.3s;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast.error { border-color: #f87171; }
-  
-  .banner {
-    background: rgba(212,175,55,0.08);
-    border: 1px solid var(--gold);
-    border-radius: 12px;
-    padding: 20px 24px;
-    margin-bottom: 24px;
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-  }
-  .banner-icon { color: var(--gold); flex-shrink: 0; }
-  .banner h3 {
-    color: var(--gold);
-    margin-bottom: 6px;
-    font-size: 14px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .banner p { color: var(--muted); font-size: 13px; line-height: 1.6; }
-  .banner code {
-    background: rgba(0,0,0,0.5);
-    padding: 2px 8px;
-    border-radius: 4px;
-    color: var(--gold);
-    font-size: 12px;
-  }
-  
-  /* Schedule cards */
-  .schedule-card {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 12px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 16px;
-    align-items: center;
-  }
-  .schedule-card.active-now {
-    border-color: #4ade80;
-    background: rgba(74, 222, 128, 0.05);
-  }
-  .schedule-card.upcoming {
-    border-color: var(--gold);
-  }
-  .schedule-info h4 {
-    color: var(--gold);
-    margin-bottom: 6px;
-    font-size: 16px;
-  }
-  .schedule-meta {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-  .schedule-meta strong { color: var(--text); }
-  .schedule-status {
-    display: inline-block;
-    font-size: 10px;
-    padding: 3px 10px;
-    border-radius: 10px;
-    margin-top: 8px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .schedule-status.active { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
-  .schedule-status.scheduled { background: rgba(212, 175, 55, 0.2); color: var(--gold); }
-  .schedule-status.expired { background: rgba(248, 113, 113, 0.2); color: #f87171; }
-  .schedule-status.disabled { background: rgba(136, 136, 136, 0.2); color: var(--muted); }
-  
-  .schedule-actions {
-    display: flex;
-    gap: 6px;
-  }
-  
-  /* Modal */
+  /* Add from library modal */
   .modal-overlay {
     position: fixed;
     inset: 0;
@@ -407,7 +429,7 @@
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 32px;
-    max-width: 700px;
+    max-width: 1000px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
@@ -417,11 +439,263 @@
     margin-bottom: 8px;
     font-size: 22px;
   }
-  .modal-subtitle {
-    color: var(--muted);
-    margin-bottom: 24px;
-    font-size: 13px;
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
   }
+  
+  /* ============================================
+     SCREENS
+     ============================================ */
+  .screens-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+  
+  .screen-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border 0.15s;
+  }
+  .screen-card:hover { border-color: var(--gold); }
+  .screen-card.unnamed { 
+    border-color: var(--gold); 
+    background: rgba(212,175,55,0.03);
+  }
+  
+  .screen-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .screen-status .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .screen-status.offline .dot { background: #555; }
+  .screen-status .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+  }
+  
+  .screen-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .screen-name {
+    font-size: 18px;
+    color: var(--gold);
+    font-weight: 500;
+    flex: 1;
+  }
+  .screen-name input {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--gold);
+    color: var(--text);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 16px;
+    width: 100%;
+  }
+  
+  .screen-id {
+    font-family: monospace;
+    color: var(--muted);
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+  .screen-ip {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .screen-playlist-select {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 8px;
+    width: 100%;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .screen-playlist-select:focus { outline: none; border-color: var(--gold); }
+  
+  .screen-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  
+  .screen-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  
+  /* ============================================
+     EMPTY STATES
+     ============================================ */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .empty-state svg {
+    color: var(--gold);
+    opacity: 0.3;
+    margin-bottom: 16px;
+  }
+  .empty-state h3 {
+    color: var(--text);
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--surface);
+    border: 1px solid var(--gold);
+    color: var(--text);
+    padding: 14px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    z-index: 2000;
+    transition: transform 0.3s;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { border-color: var(--red); }
+  .toast.success { border-color: var(--green); }
+  
+  /* Stats */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 12px;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .stat-value {
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--gold);
+  }
+  
+  /* Image preview modal */
+  #previewModal .modal {
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+  .preview-image {
+    width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #000;
+  }
+  .preview-info {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--surface-2);
+    border-radius: 8px;
+    flex-wrap: wrap;
+  }
+  .preview-info-item strong {
+    color: var(--gold);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .preview-info-item span {
+    color: var(--text);
+    font-family: monospace;
+  }
+  .preview-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  
+  /* Schedule */
+  .schedule-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: center;
+  }
+  .schedule-card.active-now {
+    border-color: var(--green);
+    background: rgba(74, 222, 128, 0.05);
+  }
+  .schedule-card h4 {
+    color: var(--gold);
+    margin-bottom: 6px;
+    font-size: 15px;
+  }
+  .schedule-meta {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .schedule-status {
+    display: inline-block;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .schedule-status.active { background: rgba(74,222,128,0.2); color: var(--green); }
+  .schedule-status.scheduled { background: rgba(212,175,55,0.2); color: var(--gold); }
+  .schedule-status.expired { background: rgba(248,113,113,0.2); color: var(--red); }
+  .schedule-status.disabled { background: rgba(136,136,136,0.2); color: var(--muted); }
   
   .form-row {
     display: grid;
@@ -429,11 +703,7 @@
     gap: 16px;
     margin-bottom: 16px;
   }
-  .form-field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
   .form-field label {
     font-size: 11px;
     color: var(--muted);
@@ -449,30 +719,9 @@
     font-family: inherit;
     font-size: 14px;
     outline: none;
-    transition: border 0.15s;
   }
   .form-field input:focus { border-color: var(--gold); }
   
-  .modal-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-    margin-top: 24px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
-  }
-  
-  .schedule-playlist-mini {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 16px;
-    max-height: 300px;
-    overflow-y: auto;
-    margin-top: 16px;
-  }
-  
-  /* Toggle switch */
   .switch {
     position: relative;
     width: 44px;
@@ -482,6 +731,7 @@
     border-radius: 12px;
     cursor: pointer;
     transition: background 0.2s;
+    flex-shrink: 0;
   }
   .switch.on { background: rgba(212, 175, 55, 0.3); border-color: var(--gold); }
   .switch::after {
@@ -495,16 +745,13 @@
     border-radius: 50%;
     transition: all 0.2s;
   }
-  .switch.on::after {
-    left: 22px;
-    background: var(--gold);
-  }
+  .switch.on::after { left: 22px; background: var(--gold); }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">
+  <div>
     <span class="logo-text">CAFELAX</span>
     <span class="logo-sub">Signage Control</span>
   </div>
@@ -515,118 +762,155 @@
 
 <div class="container">
   
-  <div class="banner">
-    <svg class="banner-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
-    </svg>
-    <div>
-      <h3>إعداد الشاشات</h3>
-      <p>افتح <code id="displayUrl"></code> على الشاشة، ثم اكتب اسم المجموعة. لفتح الإعدادات لاحقاً: اضغط OK 5 مرات بسرعة، أو زرار Menu، أو F1 للـ PIN code.</p>
-    </div>
-  </div>
-  
   <div class="tabs">
     <button class="tab active" data-tab="overview">Overview</button>
-    <button class="tab" data-tab="playlists">Default Playlists</button>
-    <button class="tab" data-tab="schedules">📅 Scheduled Campaigns</button>
-    <button class="tab" data-tab="screens">Screens</button>
+    <button class="tab" data-tab="library">📚 Media Library <span class="badge" id="libBadge">0</span></button>
+    <button class="tab" data-tab="playlists">🎵 Playlists <span class="badge" id="plBadge">0</span></button>
+    <button class="tab" data-tab="screens">📺 Screens <span class="badge" id="scrBadge">0</span></button>
   </div>
   
-  <!-- OVERVIEW -->
+  <!-- ============================================ OVERVIEW ============================================ -->
   <div class="panel active" id="panel-overview">
     <div class="stats">
       <div class="stat">
-        <div class="stat-label">Active Screens</div>
-        <div class="stat-value" id="stat-screens">0</div>
-        <div class="stat-sub" id="stat-screens-sub">من إجمالي 0</div>
+        <div class="stat-label">Online Screens</div>
+        <div class="stat-value" id="stat-online">0</div>
       </div>
       <div class="stat">
-        <div class="stat-label">Groups</div>
-        <div class="stat-value" id="stat-groups">0</div>
+        <div class="stat-label">Total Screens</div>
+        <div class="stat-value" id="stat-total-screens">0</div>
       </div>
       <div class="stat">
-        <div class="stat-label">Total Media</div>
-        <div class="stat-value" id="stat-media">0</div>
+        <div class="stat-label">Library Items</div>
+        <div class="stat-value" id="stat-library">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Playlists</div>
+        <div class="stat-value" id="stat-playlists">0</div>
       </div>
       <div class="stat">
         <div class="stat-label">Active Campaigns</div>
-        <div class="stat-value" id="stat-campaigns" style="color:#4ade80;">0</div>
-        <div class="stat-sub">شغالة دلوقتي</div>
+        <div class="stat-value" id="stat-campaigns" style="color:var(--green)">0</div>
       </div>
     </div>
     
-    <h2 style="font-size:14px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">Active Groups</h2>
-    <div class="groups-grid" id="groups-grid">
-      <div class="empty-state">جاري التحميل...</div>
+    <div class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">📺 Recent Screens</div>
+          <div class="section-subtitle">آخر الشاشات المتصلة</div>
+        </div>
+      </div>
+      <div id="overview-screens"></div>
     </div>
   </div>
   
-  <!-- PLAYLISTS (Default) -->
-  <div class="panel" id="panel-playlists">
-    <div class="playlist-section">
-      <div class="playlist-header">
+  <!-- ============================================ LIBRARY ============================================ -->
+  <div class="panel" id="panel-library">
+    <div class="section">
+      <div class="section-header">
         <div>
-          <div class="playlist-title">Default Playlist</div>
-          <div style="color:var(--muted);font-size:12px;margin-top:4px;">القائمة الأساسية اللي بتشتغل لما مفيش حملة مؤقتة</div>
-        </div>
-        <div style="display:flex;gap:12px;align-items:center;">
-          <select class="group-selector" id="groupSelector" onchange="loadPlaylist()"></select>
-          <button class="btn btn-sm" onclick="addNewGroup()">+ New Group</button>
+          <div class="section-title">📚 Media Library</div>
+          <div class="section-subtitle">ارفع الصور والفيديوهات هنا، استخدمها في أكثر من playlist</div>
         </div>
       </div>
       
       <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
-        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color:var(--gold);">
           <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
           <polyline points="17 8 12 3 7 8"/>
           <line x1="12" y1="3" x2="12" y2="15"/>
         </svg>
-        <div class="upload-zone-text">اسحب الصور والفيديوهات هنا أو اضغط للاختيار</div>
-        <div class="upload-zone-sub">JPG, PNG, WEBP, MP4 — Max 50MB لكل ملف</div>
+        <div style="font-size:16px;margin-top:12px;">اسحب الصور والفيديوهات هنا أو اضغط للاختيار</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:6px;">JPG, PNG, WEBP, MP4 — Max 50MB</div>
         <input type="file" id="fileInput" multiple accept="image/*,video/*" hidden>
         <div class="upload-progress" id="uploadProgress" style="width:0;"></div>
       </div>
       
-      <div class="playlist-items" id="playlistItems"></div>
-      
-      <div style="display:flex;gap:12px;margin-top:24px;">
-        <button class="btn btn-primary" onclick="savePlaylist()">SAVE & DEPLOY</button>
+      <div class="library-toolbar">
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 ابحث عن صورة أو فيديو...">
       </div>
+      
+      <div class="library-grid" id="libraryGrid"></div>
     </div>
   </div>
   
-  <!-- SCHEDULED CAMPAIGNS -->
-  <div class="panel" id="panel-schedules">
-    <div class="playlist-section">
-      <div class="playlist-header">
+  <!-- ============================================ PLAYLISTS ============================================ -->
+  <div class="panel" id="panel-playlists">
+    <div class="section">
+      <div class="section-header">
         <div>
-          <div class="playlist-title">📅 Scheduled Campaigns</div>
-          <div style="color:var(--muted);font-size:12px;margin-top:4px;">حملات مؤقتة بتشتغل في أوقات محددة وترجع للقائمة الأساسية تلقائياً</div>
+          <div class="section-title">🎵 Playlists</div>
+          <div class="section-subtitle">أنشئ قوائم عرض من المكتبة</div>
         </div>
-        <div style="display:flex;gap:12px;align-items:center;">
-          <select class="group-selector" id="scheduleGroupSelector" onchange="loadSchedules()"></select>
-          <button class="btn btn-primary" onclick="openScheduleModal()">+ New Campaign</button>
-        </div>
+        <button class="btn btn-primary" onclick="createPlaylist()">+ New Playlist</button>
       </div>
       
-      <div id="schedulesList">
-        <div class="empty-state">اختار مجموعة لعرض الحملات المجدولة</div>
+      <div class="playlists-list">
+        <div class="playlist-sidebar" id="playlistSidebar"></div>
+        <div id="playlistEditor">
+          <div class="empty-state">
+            <h3>اختار playlist من القائمة</h3>
+            <p>أو أنشئ playlist جديدة</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
   
-  <!-- SCREENS -->
+  <!-- ============================================ SCREENS ============================================ -->
   <div class="panel" id="panel-screens">
-    <div id="screensList"></div>
+    <div class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">📺 Connected Screens</div>
+          <div class="section-subtitle">الشاشات المتصلة - عيّن لكل شاشة playlist معينة</div>
+        </div>
+      </div>
+      
+      <div class="screens-grid" id="screensGrid"></div>
+    </div>
   </div>
   
+</div>
+
+<!-- ============================================ MODALS ============================================ -->
+
+<!-- Add Media to Playlist Modal -->
+<div class="modal-overlay" id="addMediaModal">
+  <div class="modal">
+    <h2>إضافة من المكتبة</h2>
+    <div style="color:var(--muted);font-size:13px;margin-bottom:20px;">اختار الصور والفيديوهات اللي عايز تضيفها للـ playlist</div>
+    
+    <input type="text" class="search-input" id="modalSearch" placeholder="🔍 ابحث..." style="margin-bottom:16px;">
+    
+    <div class="library-grid" id="modalLibraryGrid"></div>
+    
+    <div class="modal-actions">
+      <button class="btn" onclick="closeAddMediaModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmAddMedia()">Add Selected (<span id="selectedCount">0</span>)</button>
+    </div>
+  </div>
+</div>
+
+<!-- Image Preview Modal -->
+<div class="modal-overlay" id="previewModal">
+  <div class="modal">
+    <h2 id="previewTitle">Preview</h2>
+    <div id="previewContent"></div>
+    <div class="preview-info" id="previewInfo"></div>
+    <div class="preview-actions" id="previewActions"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closePreviewModal()">Close</button>
+    </div>
+  </div>
 </div>
 
 <!-- Schedule Modal -->
 <div class="modal-overlay" id="scheduleModal">
   <div class="modal">
-    <h2 id="modalTitle">حملة مؤقتة جديدة</h2>
-    <div class="modal-subtitle">حدد فترة الحملة والمحتوى الخاص بيها</div>
+    <h2 id="scheduleModalTitle">حملة مؤقتة جديدة</h2>
+    <div style="color:var(--muted);font-size:13px;margin-bottom:20px;">حملة بتشتغل في فترة محددة وترجع للـ playlist الأساسي تلقائياً</div>
     
     <div class="form-field" style="margin-bottom:16px;">
       <label>اسم الحملة</label>
@@ -635,27 +919,19 @@
     
     <div class="form-row">
       <div class="form-field">
-        <label>من تاريخ ووقت</label>
+        <label>من تاريخ</label>
         <input type="datetime-local" id="scheduleStart">
       </div>
       <div class="form-field">
-        <label>إلى تاريخ ووقت</label>
+        <label>إلى تاريخ</label>
         <input type="datetime-local" id="scheduleEnd">
       </div>
     </div>
     
     <div style="margin-top:24px;">
       <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">محتوى الحملة</label>
-      
-      <div class="upload-zone" id="scheduleUploadZone" onclick="document.getElementById('scheduleFileInput').click()" style="margin-top:8px;padding:30px;">
-        <div class="upload-zone-text" style="font-size:14px;">اضغط لرفع صور أو فيديوهات الحملة</div>
-        <input type="file" id="scheduleFileInput" multiple accept="image/*,video/*" hidden>
-        <div class="upload-progress" id="scheduleUploadProgress" style="width:0;"></div>
-      </div>
-      
-      <div class="schedule-playlist-mini" id="schedulePlaylistMini">
-        <div class="empty-state" style="padding:20px;font-size:13px;">لا توجد ملفات بعد</div>
-      </div>
+      <button class="btn btn-sm" onclick="openAddMediaForSchedule()" style="margin:8px 0;">+ Add from Library</button>
+      <div id="scheduleItemsList" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;max-height:300px;overflow-y:auto;"></div>
     </div>
     
     <div class="modal-actions">
@@ -669,22 +945,22 @@
 
 <script>
 // ============================================
-// CAFELAX CONTROL PANEL with Schedules
+// CAFELAX CONTROL PANEL v2
 // ============================================
 
 const API = window.location.origin + '/api/admin';
-let state = { groups: {}, screens: {} };
-let currentPlaylist = [];
-let currentSchedulePlaylist = [];
+let state = { library: {}, playlists: {}, screens: {} };
+let currentPlaylistId = null;
 let editingScheduleId = null;
-let dirty = false;
+let editingScheduleForPlaylist = null;
+let currentScheduleItems = [];
+let modalContext = 'playlist'; // 'playlist' or 'schedule'
+let modalSelectedIds = new Set();
 
-document.getElementById('displayUrl').textContent = window.location.origin + '/display.html';
-
-function toast(msg, isError) {
+function toast(msg, type) {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.classList.toggle('error', !!isError);
+  t.className = 'toast ' + (type || '');
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
@@ -709,10 +985,6 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
-    
-    if (tab.dataset.tab === 'schedules') {
-      loadSchedules();
-    }
   });
 });
 
@@ -722,171 +994,31 @@ document.querySelectorAll('.tab').forEach(tab => {
 async function loadState() {
   try {
     state = await api('/state');
+    if (!state.library) state.library = {};
+    if (!state.playlists) state.playlists = {};
+    if (!state.screens) state.screens = {};
     renderAll();
   } catch (err) {
-    toast('فشل التحميل: ' + err.message, true);
+    toast('فشل التحميل: ' + err.message, 'error');
   }
 }
 
-// ============================================
-// GROUPS
-// ============================================
-async function addNewGroup() {
-  const name = prompt('اسم المجموعة الجديدة:');
-  if (!name) return;
+function renderAll() {
+  // Update badges
+  document.getElementById('libBadge').textContent = Object.keys(state.library).length;
+  document.getElementById('plBadge').textContent = Object.keys(state.playlists).length;
+  document.getElementById('scrBadge').textContent = Object.keys(state.screens).length;
   
-  try {
-    const result = await api('/groups', {
-      method: 'POST',
-      body: JSON.stringify({ name })
-    });
-    await loadState();
-    document.getElementById('groupSelector').value = result.name;
-    loadPlaylist();
-    toast('✓ تم إنشاء: ' + result.name);
-  } catch (err) {
-    toast('فشل: ' + err.message, true);
-  }
-}
-
-function renderGroupSelectors() {
-  const selectors = ['groupSelector', 'scheduleGroupSelector'];
-  selectors.forEach(id => {
-    const sel = document.getElementById(id);
-    if (!sel) return;
-    const current = sel.value;
-    sel.innerHTML = '';
-    
-    const groupNames = Object.keys(state.groups);
-    if (!groupNames.length) {
-      sel.innerHTML = '<option>لا توجد مجموعات</option>';
-      return;
-    }
-    
-    groupNames.forEach(g => {
-      const opt = document.createElement('option');
-      opt.value = g;
-      opt.textContent = g;
-      sel.appendChild(opt);
-    });
-    
-    if (current && state.groups[current]) sel.value = current;
-  });
+  renderOverview();
+  renderLibrary();
+  renderPlaylistsSidebar();
+  if (currentPlaylistId) renderPlaylistEditor(currentPlaylistId);
+  renderScreens();
 }
 
 // ============================================
-// DEFAULT PLAYLIST
+// MEDIA LIBRARY
 // ============================================
-function loadPlaylist() {
-  const groupName = document.getElementById('groupSelector').value;
-  const group = state.groups[groupName];
-  if (!group) return;
-  
-  currentPlaylist = JSON.parse(JSON.stringify(group.playlist || []));
-  dirty = false;
-  renderPlaylist();
-}
-
-function renderPlaylist() {
-  const container = document.getElementById('playlistItems');
-  container.innerHTML = '';
-  
-  if (!currentPlaylist.length) {
-    container.innerHTML = '<div class="empty-state">لا توجد عناصر بعد</div>';
-    return;
-  }
-  
-  currentPlaylist.forEach((item, idx) => {
-    const div = createPlaylistItemElement(item, idx, currentPlaylist, () => {
-      dirty = true;
-      renderPlaylist();
-    });
-    container.appendChild(div);
-  });
-}
-
-function createPlaylistItemElement(item, idx, list, onChange) {
-  const div = document.createElement('div');
-  div.className = 'playlist-item';
-  
-  const thumbStyle = item.type === 'image' 
-    ? `background-image:url('${item.url}');background-size:cover;background-position:center;`
-    : '';
-  
-  const videoHtml = item.type === 'video' 
-    ? `<video src="${item.url}" muted preload="metadata"></video>` 
-    : '';
-  
-  div.innerHTML = `
-    <div class="item-thumb" style="${thumbStyle}">${videoHtml}</div>
-    <div class="item-info">
-      <div class="item-name">${item.name || 'Untitled'}</div>
-      <div class="item-meta">${item.type.toUpperCase()} · ${formatSize(item.size)}</div>
-    </div>
-    <input type="number" class="duration-input" value="${item.duration / 1000}" min="1" max="120" title="Seconds">
-    <div class="item-actions">
-      <button class="icon-btn" data-action="up">▲</button>
-      <button class="icon-btn" data-action="down">▼</button>
-      <button class="icon-btn danger" data-action="remove">✕</button>
-    </div>
-  `;
-  
-  div.querySelector('.duration-input').addEventListener('change', (e) => {
-    list[idx].duration = Math.max(1, parseInt(e.target.value)) * 1000;
-    onChange();
-  });
-  
-  div.querySelectorAll('.icon-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const action = btn.dataset.action;
-      if (action === 'up' && idx > 0) {
-        [list[idx], list[idx-1]] = [list[idx-1], list[idx]];
-        onChange();
-      } else if (action === 'down' && idx < list.length - 1) {
-        [list[idx], list[idx+1]] = [list[idx+1], list[idx]];
-        onChange();
-      } else if (action === 'remove') {
-        if (confirm('حذف العنصر؟')) {
-          list.splice(idx, 1);
-          onChange();
-        }
-      }
-    });
-  });
-  
-  return div;
-}
-
-function formatSize(bytes) {
-  if (!bytes) return '—';
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-  return (bytes / 1024 / 1024).toFixed(1) + ' MB';
-}
-
-// File upload handling (shared)
-async function uploadFiles(files, progressEl) {
-  const formData = new FormData();
-  for (const file of files) formData.append('files', file);
-  
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.upload.addEventListener('progress', (e) => {
-      if (e.lengthComputable && progressEl) {
-        progressEl.style.width = (e.loaded / e.total * 100) + '%';
-      }
-    });
-    xhr.addEventListener('load', () => {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(JSON.parse(xhr.responseText));
-      } else reject(new Error('Upload failed'));
-    });
-    xhr.addEventListener('error', () => reject(new Error('Network error')));
-    xhr.open('POST', API + '/upload');
-    xhr.send(formData);
-  });
-}
-
-// Default playlist upload
 const uploadZone = document.getElementById('uploadZone');
 const fileInput = document.getElementById('fileInput');
 const uploadProgress = document.getElementById('uploadProgress');
@@ -899,28 +1031,40 @@ uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag
 uploadZone.addEventListener('drop', (e) => {
   e.preventDefault();
   uploadZone.classList.remove('dragover');
-  handleDefaultFiles(e.dataTransfer.files);
+  uploadFiles(e.dataTransfer.files);
 });
-fileInput.addEventListener('change', (e) => handleDefaultFiles(e.target.files));
+fileInput.addEventListener('change', (e) => uploadFiles(e.target.files));
 
-async function handleDefaultFiles(files) {
+async function uploadFiles(files) {
   if (!files.length) return;
-  if (!Object.keys(state.groups).length) {
-    toast('أنشئ مجموعة أولاً', true);
-    return;
-  }
+  
+  const formData = new FormData();
+  for (const f of files) formData.append('files', f);
   
   uploadProgress.style.width = '0%';
   uploadZone.style.pointerEvents = 'none';
   
   try {
-    const result = await uploadFiles(files, uploadProgress);
-    currentPlaylist.push(...result.files);
-    dirty = true;
-    renderPlaylist();
-    toast(`✓ تم رفع ${files.length} ملف`);
+    await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.upload.addEventListener('progress', (e) => {
+        if (e.lengthComputable) {
+          uploadProgress.style.width = (e.loaded / e.total * 100) + '%';
+        }
+      });
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) resolve();
+        else reject(new Error('Upload failed'));
+      });
+      xhr.addEventListener('error', () => reject(new Error('Network error')));
+      xhr.open('POST', API + '/library/upload');
+      xhr.send(formData);
+    });
+    
+    await loadState();
+    toast(`✓ تم رفع ${files.length} ملف`, 'success');
   } catch (err) {
-    toast('فشل: ' + err.message, true);
+    toast('فشل: ' + err.message, 'error');
   } finally {
     uploadProgress.style.width = '0%';
     uploadZone.style.pointerEvents = 'auto';
@@ -928,178 +1072,575 @@ async function handleDefaultFiles(files) {
   }
 }
 
-async function savePlaylist() {
-  const groupName = document.getElementById('groupSelector').value;
-  if (!groupName) { toast('اختر مجموعة', true); return; }
+function renderLibrary() {
+  const grid = document.getElementById('libraryGrid');
+  const search = (document.getElementById('searchInput').value || '').toLowerCase();
   
-  try {
-    await api(`/groups/${encodeURIComponent(groupName)}/playlist`, {
-      method: 'PUT',
-      body: JSON.stringify({ playlist: currentPlaylist })
-    });
-    dirty = false;
-    await loadState();
-    toast('✓ تم النشر');
-  } catch (err) {
-    toast('فشل: ' + err.message, true);
-  }
-}
-
-// ============================================
-// SCHEDULES
-// ============================================
-function loadSchedules() {
-  const groupName = document.getElementById('scheduleGroupSelector').value;
-  const group = state.groups[groupName];
-  const container = document.getElementById('schedulesList');
+  const items = Object.values(state.library)
+    .filter(m => !search || m.name.toLowerCase().includes(search))
+    .sort((a, b) => b.uploaded - a.uploaded);
   
-  if (!group) {
-    container.innerHTML = '<div class="empty-state">اختار مجموعة</div>';
+  if (!items.length) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1;">
+        <h3>المكتبة فاضية</h3>
+        <p>ارفع الصور والفيديوهات لتظهر هنا</p>
+      </div>`;
     return;
   }
   
-  const schedules = group.schedules || [];
-  if (!schedules.length) {
-    container.innerHTML = '<div class="empty-state">لا توجد حملات مجدولة. اضغط + New Campaign لإضافة واحدة</div>';
-    return;
-  }
-  
-  // ترتيب: النشط دلوقتي، ثم القادم، ثم المنتهي
-  const now = Date.now();
-  const sorted = [...schedules].sort((a, b) => {
-    const aStart = new Date(a.startDate).getTime();
-    const aEnd = new Date(a.endDate).getTime();
-    const bStart = new Date(b.startDate).getTime();
-    const bEnd = new Date(b.endDate).getTime();
-    
-    const aActive = a.active && now >= aStart && now <= aEnd;
-    const bActive = b.active && now >= bStart && now <= bEnd;
-    if (aActive !== bActive) return bActive - aActive;
-    
-    return aStart - bStart;
-  });
-  
-  container.innerHTML = '';
-  sorted.forEach(schedule => {
-    const card = renderScheduleCard(schedule, groupName);
-    container.appendChild(card);
+  grid.innerHTML = '';
+  items.forEach(media => {
+    grid.appendChild(createMediaCard(media));
   });
 }
 
-function renderScheduleCard(schedule, groupName) {
-  const now = Date.now();
-  const start = new Date(schedule.startDate).getTime();
-  const end = new Date(schedule.endDate).getTime();
-  
-  let status, statusClass, cardClass = '';
-  if (!schedule.active) {
-    status = 'معطّلة';
-    statusClass = 'disabled';
-  } else if (now < start) {
-    status = 'مجدولة';
-    statusClass = 'scheduled';
-    cardClass = 'upcoming';
-  } else if (now > end) {
-    status = 'انتهت';
-    statusClass = 'expired';
-  } else {
-    status = '● شغالة دلوقتي';
-    statusClass = 'active';
-    cardClass = 'active-now';
-  }
-  
+function createMediaCard(media, selectable = false) {
   const card = document.createElement('div');
-  card.className = 'schedule-card ' + cardClass;
+  card.className = 'media-card';
+  
+  const thumbContent = media.type === 'video'
+    ? `<video src="${media.url}" muted preload="metadata"></video><div class="video-badge">VIDEO</div>`
+    : '';
+  
+  const thumbStyle = media.type === 'image'
+    ? `background-image:url('${media.url}');`
+    : '';
+  
+  const dimensions = media.width && media.height 
+    ? `${media.width} × ${media.height}` 
+    : '—';
   
   card.innerHTML = `
-    <div class="schedule-info">
-      <h4>${schedule.name}</h4>
-      <div class="schedule-meta">
-        <strong>من:</strong> ${formatDate(schedule.startDate)}<br>
-        <strong>إلى:</strong> ${formatDate(schedule.endDate)}<br>
-        <strong>المحتوى:</strong> ${schedule.playlist.length} عنصر
+    <div class="media-thumb" style="${thumbStyle}">${thumbContent}</div>
+    <div class="media-info">
+      <div class="media-name">${media.name}</div>
+      <div class="media-meta">
+        <span class="media-dimensions">${dimensions}</span>
+        <span>${formatSize(media.size)}</span>
       </div>
-      <div class="schedule-status ${statusClass}">${status}</div>
     </div>
-    <div class="schedule-actions">
-      <div class="switch ${schedule.active ? 'on' : ''}" data-toggle></div>
-      <button class="icon-btn" data-edit>✎</button>
-      <button class="icon-btn danger" data-delete>✕</button>
+    <div class="media-actions">
+      <button class="icon-btn" data-action="preview" title="Preview">👁</button>
+      ${media.type === 'image' ? '<button class="icon-btn" data-action="rotate" title="Rotate">↻</button>' : ''}
+      <button class="icon-btn danger" data-action="delete" title="Delete" style="margin-left:auto;">✕</button>
     </div>
   `;
   
-  card.querySelector('[data-toggle]').addEventListener('click', async () => {
-    try {
-      await api(`/groups/${encodeURIComponent(groupName)}/schedules/${schedule.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ active: !schedule.active })
-      });
-      await loadState();
-      loadSchedules();
-    } catch (err) {
-      toast('فشل: ' + err.message, true);
-    }
+  card.querySelector('[data-action="preview"]').addEventListener('click', (e) => {
+    e.stopPropagation();
+    openPreview(media);
   });
   
-  card.querySelector('[data-edit]').addEventListener('click', () => {
-    openScheduleModal(schedule);
-  });
+  if (media.type === 'image') {
+    card.querySelector('[data-action="rotate"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      rotateMedia(media.id);
+    });
+  }
   
-  card.querySelector('[data-delete]').addEventListener('click', async () => {
-    if (!confirm(`حذف الحملة "${schedule.name}"؟`)) return;
+  card.querySelector('[data-action="delete"]').addEventListener('click', async (e) => {
+    e.stopPropagation();
+    if (!confirm(`حذف "${media.name}"؟ هيتشال من كل الـ playlists.`)) return;
     try {
-      await api(`/groups/${encodeURIComponent(groupName)}/schedules/${schedule.id}`, {
-        method: 'DELETE'
-      });
+      await api(`/library/${media.id}`, { method: 'DELETE' });
       await loadState();
-      loadSchedules();
-      toast('✓ تم الحذف');
+      toast('✓ تم الحذف', 'success');
     } catch (err) {
-      toast('فشل: ' + err.message, true);
+      toast('فشل: ' + err.message, 'error');
     }
   });
   
   return card;
 }
 
-function formatDate(dateStr) {
-  const d = new Date(dateStr);
-  return d.toLocaleString('ar-EG', {
-    dateStyle: 'medium',
-    timeStyle: 'short'
-  });
+document.getElementById('searchInput').addEventListener('input', renderLibrary);
+
+function formatSize(bytes) {
+  if (!bytes) return '—';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+  return (bytes / 1024 / 1024).toFixed(1) + ' MB';
+}
+
+// Preview
+function openPreview(media) {
+  document.getElementById('previewTitle').textContent = media.name;
+  
+  const content = media.type === 'video'
+    ? `<video src="${media.url}" controls autoplay muted class="preview-image"></video>`
+    : `<img src="${media.url}" class="preview-image" alt="">`;
+  document.getElementById('previewContent').innerHTML = content;
+  
+  const info = document.getElementById('previewInfo');
+  info.innerHTML = `
+    <div class="preview-info-item">
+      <strong>Dimensions</strong>
+      <span>${media.width || '?'} × ${media.height || '?'} px</span>
+    </div>
+    <div class="preview-info-item">
+      <strong>Size</strong>
+      <span>${formatSize(media.size)}</span>
+    </div>
+    <div class="preview-info-item">
+      <strong>Type</strong>
+      <span>${media.type.toUpperCase()}</span>
+    </div>
+    <div class="preview-info-item">
+      <strong>Uploaded</strong>
+      <span>${new Date(media.uploaded).toLocaleDateString('ar-EG')}</span>
+    </div>
+  `;
+  
+  const actions = document.getElementById('previewActions');
+  if (media.type === 'image') {
+    actions.innerHTML = `
+      <button class="btn btn-sm" onclick="rotateMediaFromPreview('${media.id}', 90)">↻ Rotate 90°</button>
+      <button class="btn btn-sm" onclick="rotateMediaFromPreview('${media.id}', 180)">↻ Rotate 180°</button>
+      <button class="btn btn-sm" onclick="rotateMediaFromPreview('${media.id}', 270)">↻ Rotate 270°</button>
+    `;
+  } else {
+    actions.innerHTML = '';
+  }
+  
+  document.getElementById('previewModal').classList.add('show');
+}
+
+function closePreviewModal() {
+  document.getElementById('previewModal').classList.remove('show');
+  document.getElementById('previewContent').innerHTML = '';
+}
+
+async function rotateMedia(id) {
+  const angle = prompt('زاوية التدوير (90, 180, 270):', '90');
+  if (!angle) return;
+  const num = parseInt(angle);
+  if (![90, 180, 270].includes(num)) {
+    toast('زاوية غير صحيحة', 'error');
+    return;
+  }
+  
+  try {
+    await api(`/library/${id}/rotate`, {
+      method: 'POST',
+      body: JSON.stringify({ angle: num })
+    });
+    await loadState();
+    toast('✓ تم التدوير', 'success');
+  } catch (err) {
+    toast('فشل: ' + err.message, 'error');
+  }
+}
+
+async function rotateMediaFromPreview(id, angle) {
+  try {
+    await api(`/library/${id}/rotate`, {
+      method: 'POST',
+      body: JSON.stringify({ angle })
+    });
+    await loadState();
+    closePreviewModal();
+    toast('✓ تم التدوير', 'success');
+  } catch (err) {
+    toast('فشل: ' + err.message, 'error');
+  }
 }
 
 // ============================================
-// SCHEDULE MODAL
+// PLAYLISTS
 // ============================================
+async function createPlaylist() {
+  const name = prompt('اسم الـ playlist:');
+  if (!name) return;
+  
+  try {
+    const result = await api('/playlists', {
+      method: 'POST',
+      body: JSON.stringify({ name })
+    });
+    await loadState();
+    selectPlaylist(result.playlist.id);
+    toast('✓ تم الإنشاء', 'success');
+  } catch (err) {
+    toast('فشل: ' + err.message, 'error');
+  }
+}
+
+function renderPlaylistsSidebar() {
+  const sidebar = document.getElementById('playlistSidebar');
+  const playlists = Object.values(state.playlists);
+  
+  if (!playlists.length) {
+    sidebar.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">لا توجد playlists بعد</div>';
+    return;
+  }
+  
+  sidebar.innerHTML = '';
+  playlists.forEach(pl => {
+    const div = document.createElement('div');
+    div.className = 'playlist-list-item' + (pl.id === currentPlaylistId ? ' active' : '');
+    div.innerHTML = `
+      <span class="pl-name">${pl.name}</span>
+      <span class="pl-count">${(pl.items || []).length}</span>
+    `;
+    div.addEventListener('click', () => selectPlaylist(pl.id));
+    sidebar.appendChild(div);
+  });
+}
+
+function selectPlaylist(id) {
+  currentPlaylistId = id;
+  renderPlaylistsSidebar();
+  renderPlaylistEditor(id);
+}
+
+function renderPlaylistEditor(id) {
+  const pl = state.playlists[id];
+  if (!pl) return;
+  
+  const editor = document.getElementById('playlistEditor');
+  
+  editor.innerHTML = `
+    <div class="playlist-editor">
+      <input type="text" class="playlist-name-input" value="${pl.name}" id="plNameInput">
+      
+      <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">
+        <button class="btn btn-sm" onclick="openAddMediaForPlaylist()">+ Add from Library</button>
+        <button class="btn btn-sm" onclick="openScheduleModal()">📅 Add Campaign</button>
+        <button class="btn btn-sm btn-danger" style="margin-left:auto;" onclick="deletePlaylist('${id}')">Delete Playlist</button>
+      </div>
+      
+      <div class="playlist-items-list" id="playlistItemsList"></div>
+      
+      <div id="schedulesSection" style="margin-top:32px;">
+        <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:12px;">📅 Scheduled Campaigns</h3>
+        <div id="schedulesList"></div>
+      </div>
+    </div>
+  `;
+  
+  // Name change
+  const nameInput = document.getElementById('plNameInput');
+  nameInput.addEventListener('blur', async () => {
+    if (nameInput.value.trim() !== pl.name) {
+      try {
+        await api(`/playlists/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify({ name: nameInput.value.trim() })
+        });
+        await loadState();
+        toast('✓ تم التحديث', 'success');
+      } catch (err) {
+        toast('فشل: ' + err.message, 'error');
+      }
+    }
+  });
+  
+  renderPlaylistItems(id);
+  renderSchedulesList(id);
+}
+
+function renderPlaylistItems(id) {
+  const pl = state.playlists[id];
+  const container = document.getElementById('playlistItemsList');
+  
+  if (!pl.items || !pl.items.length) {
+    container.innerHTML = `
+      <div class="empty-state" style="padding:30px 20px;">
+        <p>لا توجد عناصر بعد. اضغط "Add from Library" لإضافة محتوى.</p>
+      </div>`;
+    return;
+  }
+  
+  container.innerHTML = '';
+  pl.items.forEach((item, idx) => {
+    const media = state.library[item.mediaId];
+    if (!media) return;
+    
+    const row = document.createElement('div');
+    row.className = 'playlist-item-row';
+    
+    const thumbContent = media.type === 'video'
+      ? `<video src="${media.url}" muted preload="metadata"></video>`
+      : '';
+    const thumbStyle = media.type === 'image'
+      ? `background-image:url('${media.url}');`
+      : '';
+    
+    row.innerHTML = `
+      <div class="order-num">${idx + 1}</div>
+      <div class="item-thumb" style="${thumbStyle}">${thumbContent}</div>
+      <div>
+        <div style="font-size:13px;">${media.name}</div>
+        <div style="font-size:11px;color:var(--muted);">${media.width}×${media.height} · ${media.type}</div>
+      </div>
+      <input type="number" class="duration-input" value="${item.duration / 1000}" min="1" max="120">
+      <div style="display:flex;gap:4px;">
+        <button class="icon-btn" data-action="up">▲</button>
+        <button class="icon-btn" data-action="down">▼</button>
+        <button class="icon-btn danger" data-action="remove">✕</button>
+      </div>
+    `;
+    
+    row.querySelector('.duration-input').addEventListener('change', async (e) => {
+      pl.items[idx].duration = Math.max(1, parseInt(e.target.value)) * 1000;
+      await savePlaylistItems(id);
+    });
+    
+    row.querySelectorAll('.icon-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const action = btn.dataset.action;
+        if (action === 'up' && idx > 0) {
+          [pl.items[idx], pl.items[idx-1]] = [pl.items[idx-1], pl.items[idx]];
+        } else if (action === 'down' && idx < pl.items.length - 1) {
+          [pl.items[idx], pl.items[idx+1]] = [pl.items[idx+1], pl.items[idx]];
+        } else if (action === 'remove') {
+          if (!confirm('حذف العنصر من الـ playlist؟')) return;
+          pl.items.splice(idx, 1);
+        } else {
+          return;
+        }
+        await savePlaylistItems(id);
+      });
+    });
+    
+    container.appendChild(row);
+  });
+}
+
+async function savePlaylistItems(id) {
+  const pl = state.playlists[id];
+  try {
+    await api(`/playlists/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ items: pl.items })
+    });
+    await loadState();
+    toast('✓ تم الحفظ', 'success');
+  } catch (err) {
+    toast('فشل: ' + err.message, 'error');
+  }
+}
+
+async function deletePlaylist(id) {
+  if (!confirm('حذف الـ playlist؟')) return;
+  try {
+    await api(`/playlists/${id}`, { method: 'DELETE' });
+    currentPlaylistId = null;
+    await loadState();
+    toast('✓ تم الحذف', 'success');
+  } catch (err) {
+    toast('فشل: ' + err.message, 'error');
+  }
+}
+
+// ============================================
+// ADD MEDIA MODAL
+// ============================================
+function openAddMediaForPlaylist() {
+  modalContext = 'playlist';
+  modalSelectedIds.clear();
+  document.getElementById('selectedCount').textContent = '0';
+  document.getElementById('modalSearch').value = '';
+  renderModalLibrary();
+  document.getElementById('addMediaModal').classList.add('show');
+}
+
+function openAddMediaForSchedule() {
+  modalContext = 'schedule';
+  modalSelectedIds.clear();
+  document.getElementById('selectedCount').textContent = '0';
+  document.getElementById('modalSearch').value = '';
+  renderModalLibrary();
+  document.getElementById('addMediaModal').classList.add('show');
+}
+
+function closeAddMediaModal() {
+  document.getElementById('addMediaModal').classList.remove('show');
+}
+
+function renderModalLibrary() {
+  const grid = document.getElementById('modalLibraryGrid');
+  const search = (document.getElementById('modalSearch').value || '').toLowerCase();
+  
+  const items = Object.values(state.library)
+    .filter(m => !search || m.name.toLowerCase().includes(search))
+    .sort((a, b) => b.uploaded - a.uploaded);
+  
+  if (!items.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><p>المكتبة فاضية</p></div>';
+    return;
+  }
+  
+  grid.innerHTML = '';
+  items.forEach(media => {
+    const card = document.createElement('div');
+    card.className = 'media-card' + (modalSelectedIds.has(media.id) ? ' selected' : '');
+    
+    const thumbContent = media.type === 'video'
+      ? `<video src="${media.url}" muted preload="metadata"></video><div class="video-badge">VIDEO</div>`
+      : '';
+    const thumbStyle = media.type === 'image'
+      ? `background-image:url('${media.url}');`
+      : '';
+    
+    card.innerHTML = `
+      <div class="media-thumb" style="${thumbStyle}">${thumbContent}</div>
+      <div class="media-info">
+        <div class="media-name">${media.name}</div>
+        <div class="media-meta">
+          <span class="media-dimensions">${media.width || '?'}×${media.height || '?'}</span>
+          <span>${formatSize(media.size)}</span>
+        </div>
+      </div>
+    `;
+    
+    card.addEventListener('click', () => {
+      if (modalSelectedIds.has(media.id)) {
+        modalSelectedIds.delete(media.id);
+      } else {
+        modalSelectedIds.add(media.id);
+      }
+      document.getElementById('selectedCount').textContent = modalSelectedIds.size;
+      card.classList.toggle('selected');
+    });
+    
+    grid.appendChild(card);
+  });
+}
+
+document.getElementById('modalSearch').addEventListener('input', renderModalLibrary);
+
+async function confirmAddMedia() {
+  if (!modalSelectedIds.size) {
+    toast('اختار عنصر واحد على الأقل', 'error');
+    return;
+  }
+  
+  const newItems = Array.from(modalSelectedIds).map(mediaId => {
+    const media = state.library[mediaId];
+    return {
+      mediaId,
+      duration: media.type === 'video' ? 10000 : 5000
+    };
+  });
+  
+  if (modalContext === 'playlist') {
+    const pl = state.playlists[currentPlaylistId];
+    if (!pl) return;
+    pl.items = [...(pl.items || []), ...newItems];
+    await savePlaylistItems(currentPlaylistId);
+  } else {
+    currentScheduleItems = [...currentScheduleItems, ...newItems];
+    renderScheduleItems();
+  }
+  
+  closeAddMediaModal();
+}
+
+// ============================================
+// SCHEDULES
+// ============================================
+function renderSchedulesList(playlistId) {
+  const pl = state.playlists[playlistId];
+  const container = document.getElementById('schedulesList');
+  if (!container) return;
+  
+  const schedules = pl.schedules || [];
+  if (!schedules.length) {
+    container.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:12px;">لا توجد حملات مؤقتة</div>';
+    return;
+  }
+  
+  const now = Date.now();
+  container.innerHTML = '';
+  
+  schedules.forEach(sch => {
+    const start = new Date(sch.startDate).getTime();
+    const end = new Date(sch.endDate).getTime();
+    
+    let status, statusClass, cardClass = '';
+    if (!sch.active) { status = 'معطّلة'; statusClass = 'disabled'; }
+    else if (now < start) { status = 'مجدولة'; statusClass = 'scheduled'; }
+    else if (now > end) { status = 'انتهت'; statusClass = 'expired'; }
+    else { status = '● شغالة دلوقتي'; statusClass = 'active'; cardClass = 'active-now'; }
+    
+    const card = document.createElement('div');
+    card.className = 'schedule-card ' + cardClass;
+    card.innerHTML = `
+      <div>
+        <h4>${sch.name}</h4>
+        <div class="schedule-meta">
+          من ${formatDate(sch.startDate)}<br>
+          إلى ${formatDate(sch.endDate)}<br>
+          ${sch.items.length} عنصر
+        </div>
+        <div class="schedule-status ${statusClass}">${status}</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <div class="switch ${sch.active ? 'on' : ''}" data-toggle></div>
+        <button class="icon-btn" data-edit>✎</button>
+        <button class="icon-btn danger" data-delete>✕</button>
+      </div>
+    `;
+    
+    card.querySelector('[data-toggle]').addEventListener('click', async () => {
+      try {
+        await api(`/playlists/${playlistId}/schedules/${sch.id}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ active: !sch.active })
+        });
+        await loadState();
+      } catch (err) { toast('فشل', 'error'); }
+    });
+    
+    card.querySelector('[data-edit]').addEventListener('click', () => {
+      openScheduleModal(sch);
+    });
+    
+    card.querySelector('[data-delete]').addEventListener('click', async () => {
+      if (!confirm(`حذف "${sch.name}"؟`)) return;
+      try {
+        await api(`/playlists/${playlistId}/schedules/${sch.id}`, { method: 'DELETE' });
+        await loadState();
+        toast('✓ تم الحذف', 'success');
+      } catch (err) { toast('فشل', 'error'); }
+    });
+    
+    container.appendChild(card);
+  });
+}
+
+function formatDate(d) {
+  return new Date(d).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' });
+}
+
 function openScheduleModal(schedule) {
   editingScheduleId = schedule ? schedule.id : null;
+  editingScheduleForPlaylist = currentPlaylistId;
   
-  document.getElementById('modalTitle').textContent = schedule ? 'تعديل الحملة' : 'حملة مؤقتة جديدة';
+  document.getElementById('scheduleModalTitle').textContent = schedule ? 'تعديل الحملة' : 'حملة مؤقتة جديدة';
   document.getElementById('scheduleName').value = schedule ? schedule.name : '';
   
   if (schedule) {
     document.getElementById('scheduleStart').value = toLocalDateTime(schedule.startDate);
     document.getElementById('scheduleEnd').value = toLocalDateTime(schedule.endDate);
-    currentSchedulePlaylist = JSON.parse(JSON.stringify(schedule.playlist));
+    currentScheduleItems = JSON.parse(JSON.stringify(schedule.items));
   } else {
-    // Default: من الآن إلى أسبوع
     const now = new Date();
-    const weekLater = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const week = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     document.getElementById('scheduleStart').value = toLocalDateTime(now);
-    document.getElementById('scheduleEnd').value = toLocalDateTime(weekLater);
-    currentSchedulePlaylist = [];
+    document.getElementById('scheduleEnd').value = toLocalDateTime(week);
+    currentScheduleItems = [];
   }
   
-  renderScheduleModalPlaylist();
+  renderScheduleItems();
   document.getElementById('scheduleModal').classList.add('show');
 }
 
 function closeScheduleModal() {
   document.getElementById('scheduleModal').classList.remove('show');
   editingScheduleId = null;
-  currentSchedulePlaylist = [];
+  currentScheduleItems = [];
 }
 
 function toLocalDateTime(date) {
@@ -1108,228 +1649,250 @@ function toLocalDateTime(date) {
   return new Date(d.getTime() - tzOffset).toISOString().slice(0, 16);
 }
 
-function renderScheduleModalPlaylist() {
-  const container = document.getElementById('schedulePlaylistMini');
-  container.innerHTML = '';
+function renderScheduleItems() {
+  const container = document.getElementById('scheduleItemsList');
   
-  if (!currentSchedulePlaylist.length) {
-    container.innerHTML = '<div class="empty-state" style="padding:20px;font-size:13px;">لا توجد ملفات بعد</div>';
+  if (!currentScheduleItems.length) {
+    container.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:20px;">لا توجد ملفات</div>';
     return;
   }
   
-  currentSchedulePlaylist.forEach((item, idx) => {
-    const div = createPlaylistItemElement(item, idx, currentSchedulePlaylist, () => {
-      renderScheduleModalPlaylist();
+  container.innerHTML = '';
+  currentScheduleItems.forEach((item, idx) => {
+    const media = state.library[item.mediaId];
+    if (!media) return;
+    
+    const row = document.createElement('div');
+    row.style.cssText = 'display:grid;grid-template-columns:48px 1fr auto auto;gap:10px;align-items:center;padding:8px;border-bottom:1px solid var(--border);';
+    
+    const thumbStyle = media.type === 'image'
+      ? `background-image:url('${media.url}');background-size:cover;background-position:center;`
+      : '';
+    
+    row.innerHTML = `
+      <div style="width:48px;height:36px;background:#000;border-radius:4px;${thumbStyle}"></div>
+      <div style="font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${media.name}</div>
+      <input type="number" class="duration-input" value="${item.duration / 1000}" style="width:50px;">
+      <button class="icon-btn danger" style="width:28px;height:28px;">✕</button>
+    `;
+    
+    row.querySelector('.duration-input').addEventListener('change', (e) => {
+      currentScheduleItems[idx].duration = Math.max(1, parseInt(e.target.value)) * 1000;
     });
-    container.appendChild(div);
+    
+    row.querySelector('.icon-btn').addEventListener('click', () => {
+      currentScheduleItems.splice(idx, 1);
+      renderScheduleItems();
+    });
+    
+    container.appendChild(row);
   });
 }
 
-// Schedule file upload
-const scheduleUploadZone = document.getElementById('scheduleUploadZone');
-const scheduleFileInput = document.getElementById('scheduleFileInput');
-const scheduleUploadProgress = document.getElementById('scheduleUploadProgress');
-
-scheduleFileInput.addEventListener('change', (e) => handleScheduleFiles(e.target.files));
-
-async function handleScheduleFiles(files) {
-  if (!files.length) return;
-  
-  scheduleUploadProgress.style.width = '0%';
-  scheduleUploadZone.style.pointerEvents = 'none';
-  
-  try {
-    const result = await uploadFiles(files, scheduleUploadProgress);
-    currentSchedulePlaylist.push(...result.files);
-    renderScheduleModalPlaylist();
-    toast(`✓ تم رفع ${files.length} ملف`);
-  } catch (err) {
-    toast('فشل: ' + err.message, true);
-  } finally {
-    scheduleUploadProgress.style.width = '0%';
-    scheduleUploadZone.style.pointerEvents = 'auto';
-    scheduleFileInput.value = '';
-  }
-}
-
 async function saveSchedule() {
-  const groupName = document.getElementById('scheduleGroupSelector').value;
   const name = document.getElementById('scheduleName').value.trim();
   const startDate = document.getElementById('scheduleStart').value;
   const endDate = document.getElementById('scheduleEnd').value;
   
-  if (!name) { toast('اكتب اسم الحملة', true); return; }
-  if (!startDate || !endDate) { toast('حدد التواريخ', true); return; }
+  if (!name) { toast('اكتب اسم الحملة', 'error'); return; }
+  if (!startDate || !endDate) { toast('حدد التواريخ', 'error'); return; }
   if (new Date(endDate) <= new Date(startDate)) {
-    toast('وقت النهاية لازم يكون بعد وقت البداية', true);
+    toast('وقت النهاية لازم يكون بعد البداية', 'error');
     return;
   }
-  if (!currentSchedulePlaylist.length) {
-    toast('ارفع محتوى الحملة', true);
-    return;
-  }
-  
-  const payload = {
-    id: editingScheduleId,
-    name,
-    playlist: currentSchedulePlaylist,
-    startDate: new Date(startDate).toISOString(),
-    endDate: new Date(endDate).toISOString(),
-    active: true
-  };
+  if (!currentScheduleItems.length) { toast('أضف محتوى', 'error'); return; }
   
   try {
-    await api(`/groups/${encodeURIComponent(groupName)}/schedules`, {
+    await api(`/playlists/${editingScheduleForPlaylist}/schedules`, {
       method: 'POST',
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        id: editingScheduleId,
+        name,
+        items: currentScheduleItems,
+        startDate: new Date(startDate).toISOString(),
+        endDate: new Date(endDate).toISOString(),
+        active: true
+      })
     });
     await loadState();
-    loadSchedules();
     closeScheduleModal();
-    toast('✓ تم الحفظ');
+    toast('✓ تم الحفظ', 'success');
   } catch (err) {
-    toast('فشل: ' + err.message, true);
+    toast('فشل: ' + err.message, 'error');
   }
-}
-
-// ============================================
-// OVERVIEW
-// ============================================
-function renderOverview() {
-  const totalGroups = Object.keys(state.groups).length;
-  const totalMedia = Object.values(state.groups).reduce((s, g) => s + (g.playlist || []).length, 0);
-  const screens = Object.keys(state.screens);
-  const activeScreens = screens.filter(s => 
-    state.screens[s].lastSeen && (Date.now() - state.screens[s].lastSeen < 5 * 60 * 1000)
-  );
-  
-  // Active campaigns count
-  const now = Date.now();
-  let activeCampaigns = 0;
-  Object.values(state.groups).forEach(g => {
-    if (g.schedules) {
-      g.schedules.forEach(s => {
-        const start = new Date(s.startDate).getTime();
-        const end = new Date(s.endDate).getTime();
-        if (s.active && now >= start && now <= end) activeCampaigns++;
-      });
-    }
-  });
-  
-  document.getElementById('stat-groups').textContent = totalGroups;
-  document.getElementById('stat-media').textContent = totalMedia;
-  document.getElementById('stat-screens').textContent = activeScreens.length;
-  document.getElementById('stat-screens-sub').textContent = `من إجمالي ${screens.length}`;
-  document.getElementById('stat-campaigns').textContent = activeCampaigns;
-  
-  const grid = document.getElementById('groups-grid');
-  if (!totalGroups) {
-    grid.innerHTML = '<div class="empty-state">لا توجد مجموعات بعد</div>';
-    return;
-  }
-  
-  grid.innerHTML = '';
-  Object.entries(state.groups).forEach(([groupName, group]) => {
-    const groupScreens = screens.filter(s => state.screens[s].group === groupName);
-    const activeSchedule = (group.schedules || []).find(s => {
-      const start = new Date(s.startDate).getTime();
-      const end = new Date(s.endDate).getTime();
-      return s.active && now >= start && now <= end;
-    });
-    
-    const card = document.createElement('div');
-    card.className = 'group-card';
-    
-    const scheduleHtml = activeSchedule 
-      ? `<div style="background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);padding:8px 12px;border-radius:8px;font-size:12px;color:#4ade80;margin-bottom:12px;">📅 الآن: ${activeSchedule.name}</div>` 
-      : '';
-    
-    card.innerHTML = `
-      <div class="group-header">
-        <div class="group-name">${groupName}</div>
-        <div class="group-count">${(group.playlist || []).length} default · ${(group.schedules || []).length} campaigns</div>
-      </div>
-      ${scheduleHtml}
-      <div class="group-screens">
-        ${groupScreens.length 
-          ? groupScreens.map(s => {
-              const isOnline = (Date.now() - state.screens[s].lastSeen) < 5 * 60 * 1000;
-              return `<div class="screen-chip ${isOnline ? '' : 'offline'}">
-                <div class="dot"></div>${s.slice(0, 8)}
-              </div>`;
-            }).join('')
-          : '<div style="font-size:12px;color:var(--muted);">لا توجد شاشات متصلة</div>'
-        }
-      </div>
-    `;
-    grid.appendChild(card);
-  });
 }
 
 // ============================================
 // SCREENS
 // ============================================
 function renderScreens() {
-  const container = document.getElementById('screensList');
-  const screens = Object.entries(state.screens);
+  const grid = document.getElementById('screensGrid');
+  const screens = Object.values(state.screens);
   
   if (!screens.length) {
-    container.innerHTML = '<div class="empty-state">لا توجد شاشات متصلة</div>';
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1;">
+        <h3>لا توجد شاشات متصلة</h3>
+        <p>افتح <code>${window.location.origin}/display.html</code> على الشاشة. هتظهر هنا تلقائياً.</p>
+      </div>`;
     return;
   }
   
-  container.innerHTML = `
-    <div class="playlist-section">
-      <div class="playlist-title" style="margin-bottom:20px;">Connected Screens</div>
-      ${screens.map(([id, screen]) => {
-        const isOnline = (Date.now() - screen.lastSeen) < 5 * 60 * 1000;
-        const lastSeenMins = Math.floor((Date.now() - screen.lastSeen) / 60000);
-        return `
-          <div class="playlist-item" style="grid-template-columns:auto 1fr auto;">
-            <div style="width:10px;height:10px;border-radius:50%;background:${isOnline ? '#4ade80' : '#666'};"></div>
-            <div class="item-info">
-              <div class="item-name">${id}</div>
-              <div class="item-meta">Group: ${screen.group} · IP: ${screen.ip || '—'}</div>
-            </div>
-            <div class="item-meta">${isOnline ? 'Online' : `Offline ${lastSeenMins}m`}</div>
-          </div>
-        `;
-      }).join('')}
+  // Sort: unnamed first, then online, then by lastSeen
+  screens.sort((a, b) => {
+    if (!a.name && b.name) return -1;
+    if (a.name && !b.name) return 1;
+    return b.lastSeen - a.lastSeen;
+  });
+  
+  grid.innerHTML = '';
+  screens.forEach(screen => {
+    grid.appendChild(createScreenCard(screen));
+  });
+}
+
+function createScreenCard(screen) {
+  const card = document.createElement('div');
+  const isOnline = (Date.now() - screen.lastSeen) < 5 * 60 * 1000;
+  const isUnnamed = !screen.name;
+  
+  card.className = 'screen-card' + (isUnnamed ? ' unnamed' : '');
+  
+  const lastSeenStr = isOnline 
+    ? 'متصلة الآن' 
+    : `آخر اتصال: ${getRelativeTime(screen.lastSeen)}`;
+  
+  const playlistOptions = ['<option value="">-- بدون playlist --</option>'];
+  Object.values(state.playlists).forEach(pl => {
+    const selected = pl.id === screen.playlistId ? 'selected' : '';
+    playlistOptions.push(`<option value="${pl.id}" ${selected}>${pl.name}</option>`);
+  });
+  
+  card.innerHTML = `
+    <div class="screen-status ${isOnline ? '' : 'offline'}">
+      <div class="dot"></div>
+      <div class="label">${isOnline ? 'Online' : 'Offline'}</div>
+    </div>
+    
+    <div class="screen-name-row">
+      <div class="screen-name" data-name>${screen.name || '<em style="color:var(--gold);font-style:normal;">⚠ شاشة جديدة - أضف اسم</em>'}</div>
+      <button class="icon-btn" data-action="rename">✎</button>
+    </div>
+    
+    <div class="screen-id">ID: ${screen.id}</div>
+    <div class="screen-ip">IP: ${screen.ip || '—'}</div>
+    
+    <select class="screen-playlist-select" data-playlist>
+      ${playlistOptions.join('')}
+    </select>
+    
+    <div class="screen-actions">
+      <button class="btn btn-sm btn-danger" data-action="delete" style="margin-left:auto;">حذف</button>
+    </div>
+    
+    <div class="screen-meta">
+      <span>${lastSeenStr}</span>
+      <span>📐 ${screen.rotation}° · ${screen.fitMode}</span>
     </div>
   `;
+  
+  // Rename
+  card.querySelector('[data-action="rename"]').addEventListener('click', () => {
+    const newName = prompt('اسم الشاشة:', screen.name || '');
+    if (newName === null) return;
+    updateScreen(screen.id, { name: newName.trim() || null });
+  });
+  
+  // Playlist change
+  card.querySelector('[data-playlist]').addEventListener('change', (e) => {
+    updateScreen(screen.id, { playlistId: e.target.value });
+  });
+  
+  // Delete
+  card.querySelector('[data-action="delete"]').addEventListener('click', async () => {
+    if (!confirm(`حذف الشاشة "${screen.name || screen.id}"؟ هتظهر تاني لو فضلت شغالة.`)) return;
+    try {
+      await api(`/screens/${screen.id}`, { method: 'DELETE' });
+      await loadState();
+      toast('✓ تم الحذف', 'success');
+    } catch (err) {
+      toast('فشل: ' + err.message, 'error');
+    }
+  });
+  
+  return card;
+}
+
+async function updateScreen(id, updates) {
+  try {
+    await api(`/screens/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates)
+    });
+    await loadState();
+    toast('✓ تم التحديث', 'success');
+  } catch (err) {
+    toast('فشل: ' + err.message, 'error');
+  }
+}
+
+function getRelativeTime(timestamp) {
+  const diff = Date.now() - timestamp;
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'الآن';
+  if (mins < 60) return `منذ ${mins} دقيقة`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `منذ ${hours} ساعة`;
+  return `منذ ${Math.floor(hours / 24)} يوم`;
+}
+
+// ============================================
+// OVERVIEW
+// ============================================
+function renderOverview() {
+  const screens = Object.values(state.screens);
+  const onlineScreens = screens.filter(s => (Date.now() - s.lastSeen) < 5 * 60 * 1000);
+  
+  // Active campaigns
+  let activeCampaigns = 0;
+  const now = Date.now();
+  Object.values(state.playlists).forEach(pl => {
+    (pl.schedules || []).forEach(sch => {
+      const start = new Date(sch.startDate).getTime();
+      const end = new Date(sch.endDate).getTime();
+      if (sch.active && now >= start && now <= end) activeCampaigns++;
+    });
+  });
+  
+  document.getElementById('stat-online').textContent = onlineScreens.length;
+  document.getElementById('stat-total-screens').textContent = screens.length;
+  document.getElementById('stat-library').textContent = Object.keys(state.library).length;
+  document.getElementById('stat-playlists').textContent = Object.keys(state.playlists).length;
+  document.getElementById('stat-campaigns').textContent = activeCampaigns;
+  
+  // Recent screens
+  const overviewScreens = document.getElementById('overview-screens');
+  if (!screens.length) {
+    overviewScreens.innerHTML = '<div class="empty-state"><p>لا توجد شاشات متصلة</p></div>';
+    return;
+  }
+  
+  const recentScreens = [...screens]
+    .sort((a, b) => b.lastSeen - a.lastSeen)
+    .slice(0, 6);
+  
+  overviewScreens.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'screens-grid';
+  recentScreens.forEach(s => grid.appendChild(createScreenCard(s)));
+  overviewScreens.appendChild(grid);
 }
 
 // ============================================
 // INIT
 // ============================================
-function renderAll() {
-  renderGroupSelectors();
-  if (Object.keys(state.groups).length && !document.getElementById('groupSelector').value) {
-    document.getElementById('groupSelector').value = Object.keys(state.groups)[0];
-  }
-  loadPlaylist();
-  renderOverview();
-  renderScreens();
-  
-  // Update schedules if on that tab
-  const schedulesTab = document.querySelector('[data-tab="schedules"]');
-  if (schedulesTab && schedulesTab.classList.contains('active')) {
-    loadSchedules();
-  }
-}
-
 loadState();
-
-setInterval(() => {
-  if (!dirty) loadState();
-}, 30000);
-
-window.addEventListener('beforeunload', (e) => {
-  if (dirty) {
-    e.preventDefault();
-    e.returnValue = '';
-  }
-});
+setInterval(loadState, 30000);
 </script>
 
 </body>

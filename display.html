@@ -52,10 +52,21 @@
     width: 100%;
     height: 100%;
     opacity: 0;
-    transition: opacity 0.6s ease-in-out;
     background-color: #000;
+    /* Smooth fade transition */
+    transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Hardware acceleration to prevent flicker */
+    will-change: opacity;
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translate3d(0, 0, 0);
   }
   .slide.active { opacity: 1; }
+  .slide.preloading {
+    opacity: 0;
+    pointer-events: none;
+  }
   
   .slide.fit-cover {
     background-size: cover;
@@ -77,6 +88,10 @@
     width: 100%;
     height: 100%;
     display: block;
+    /* Smooth rendering */
+    image-rendering: -webkit-optimize-contrast;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
   .slide.fit-cover video, .slide.fit-cover img { object-fit: cover; }
   .slide.fit-contain video, .slide.fit-contain img { object-fit: contain; }
@@ -935,7 +950,73 @@ function startPlayback() {
   
   const stage = document.getElementById('stage');
   
-  function showNextSlide() {
+  // Pre-create slide elements for all items (better for smooth transitions)
+  let currentSlideEl = null;
+  let nextSlideEl = null;
+  let preloadedSlides = new Map();
+  
+  // Preload a slide element with image/video loaded in memory
+  function createSlideElement(item) {
+    return new Promise((resolve) => {
+      const slide = document.createElement('div');
+      slide.className = 'slide fit-' + state.fitMode;
+      slide.style.opacity = '0';
+      
+      if (item.type === 'video') {
+        const video = document.createElement('video');
+        video.src = item.url;
+        video.muted = true;
+        video.playsInline = true;
+        video.preload = 'auto';
+        video.loop = false;
+        slide.appendChild(video);
+        
+        const onReady = () => {
+          video.removeEventListener('canplaythrough', onReady);
+          video.removeEventListener('loadeddata', onReady);
+          resolve(slide);
+        };
+        video.addEventListener('canplaythrough', onReady, { once: true });
+        video.addEventListener('loadeddata', onReady, { once: true });
+        
+        // Fallback timeout
+        setTimeout(() => resolve(slide), 3000);
+      } else {
+        // Use <img> for better performance than background-image
+        const img = document.createElement('img');
+        img.src = item.url;
+        img.alt = '';
+        slide.appendChild(img);
+        
+        if (img.complete && img.naturalWidth > 0) {
+          resolve(slide);
+        } else {
+          img.onload = () => resolve(slide);
+          img.onerror = () => resolve(slide);
+          // Fallback timeout
+          setTimeout(() => resolve(slide), 3000);
+        }
+      }
+    });
+  }
+  
+  // Preload next slide in background
+  async function preloadNext(nextItem) {
+    if (preloadedSlides.has(nextItem.id)) return preloadedSlides.get(nextItem.id);
+    
+    const slide = await createSlideElement(nextItem);
+    preloadedSlides.set(nextItem.id, slide);
+    
+    // Limit cache size
+    if (preloadedSlides.size > 3) {
+      const firstKey = preloadedSlides.keys().next().value;
+      preloadedSlides.delete(firstKey);
+    }
+    
+    return slide;
+  }
+  
+  async function showNextSlide() {
     window._lastSlideTime = Date.now();
     
     const current = calculateCurrentSlide();
@@ -944,41 +1025,75 @@ function startPlayback() {
       return;
     }
     
-    const oldSlides = stage.querySelectorAll('.slide');
-    if (oldSlides.length > 2) {
-      for (let i = 0; i < oldSlides.length - 1; i++) oldSlides[i].remove();
-    }
-    
-    const slide = document.createElement('div');
-    slide.className = 'slide fit-' + state.fitMode;
-    
-    if (current.item.type === 'video') {
-      const video = document.createElement('video');
-      video.src = current.item.url;
-      video.muted = true;
-      video.autoplay = true;
-      video.playsInline = true;
-      slide.appendChild(video);
-      video.play().catch(() => {});
+    // Get or create the slide element (preloaded if possible)
+    let newSlide;
+    if (preloadedSlides.has(current.item.id)) {
+      newSlide = preloadedSlides.get(current.item.id);
+      preloadedSlides.delete(current.item.id);
     } else {
-      slide.style.backgroundImage = `url('${current.item.url}')`;
+      newSlide = await createSlideElement(current.item);
     }
     
-    stage.appendChild(slide);
+    // Add to stage but keep invisible
+    if (!newSlide.parentNode) {
+      stage.appendChild(newSlide);
+    }
     
-    requestAnimationFrame(() => {
-      stage.querySelectorAll('.slide.active').forEach(s => {
-        if (s !== slide) s.classList.remove('active');
+    // Force browser to paint the new slide before fading in
+    // Double rAF ensures the browser has rendered the element
+    await new Promise(resolve => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(resolve);
       });
-      slide.classList.add('active');
-      setTimeout(() => {
-        stage.querySelectorAll('.slide:not(.active)').forEach(s => s.remove());
-      }, 800);
     });
     
+    // Start video playback if needed
+    const video = newSlide.querySelector('video');
+    if (video) {
+      try {
+        video.currentTime = 0;
+        await video.play();
+      } catch (e) {}
+    }
+    
+    // Fade in the new slide (CSS transition handles the smooth fade)
+    newSlide.style.opacity = '1';
+    newSlide.classList.add('active');
+    
+    // Fade out the old slide simultaneously (crossfade)
+    const oldSlide = currentSlideEl;
+    if (oldSlide && oldSlide !== newSlide) {
+      oldSlide.classList.remove('active');
+      oldSlide.style.opacity = '0';
+      
+      // Remove old slide after transition completes (1.2s + buffer)
+      setTimeout(() => {
+        if (oldSlide.parentNode) {
+          // Stop any playing video to free resources
+          const oldVideo = oldSlide.querySelector('video');
+          if (oldVideo) {
+            oldVideo.pause();
+            oldVideo.src = '';
+          }
+          oldSlide.remove();
+        }
+      }, 1500);
+    }
+    
+    currentSlideEl = newSlide;
+    
+    // Preload next slide in background
+    const nextIndex = (current.index + 1) % state.playlist.length;
+    const nextItem = state.playlist[nextIndex];
+    if (nextItem) {
+      preloadNext(nextItem).catch(() => {});
+    }
+    
+    // Schedule next slide change
     setTimeout(showNextSlide, current.remaining);
   }
   
+  // Start the playback loop
   showNextSlide();
 }
 

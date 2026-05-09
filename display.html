@@ -15,7 +15,6 @@
     cursor: none;
   }
   
-  /* Rotator wrapper */
   #rotator {
     position: fixed;
     inset: 0;
@@ -26,22 +25,16 @@
   #rotator.rotate-180 { transform: rotate(180deg); }
   #rotator.rotate-90 {
     transform: rotate(90deg);
-    width: 100vh;
-    height: 100vw;
-    top: 50%;
-    left: 50%;
-    margin-top: -50vw;
-    margin-left: -50vh;
+    width: 100vh; height: 100vw;
+    top: 50%; left: 50%;
+    margin-top: -50vw; margin-left: -50vh;
     inset: auto;
   }
   #rotator.rotate-270 {
     transform: rotate(-90deg);
-    width: 100vh;
-    height: 100vw;
-    top: 50%;
-    left: 50%;
-    margin-top: -50vw;
-    margin-left: -50vh;
+    width: 100vh; height: 100vw;
+    top: 50%; left: 50%;
+    margin-top: -50vw; margin-left: -50vh;
     inset: auto;
   }
   
@@ -89,24 +82,69 @@
   .slide.fit-contain video, .slide.fit-contain img { object-fit: contain; }
   .slide.fit-fill video, .slide.fit-fill img { object-fit: fill; }
   
-  /* ============================================
-     INVISIBLE EXIT TRIGGER (Top corners)
-     ============================================ */
-  .exit-zone {
+  /* Welcome / Empty state */
+  #welcomeScreen {
     position: fixed;
-    width: 80px;
-    height: 80px;
-    z-index: 50;
-    cursor: pointer;
+    inset: 0;
+    background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    flex-direction: column;
+    gap: 30px;
+    padding: 5vh 5vw;
+    text-align: center;
   }
-  .exit-zone-tl { top: 0; left: 0; }
-  .exit-zone-tr { top: 0; right: 0; }
-  .exit-zone-bl { bottom: 0; left: 0; }
-  .exit-zone-br { bottom: 0; right: 0; }
+  #welcomeScreen.hidden { display: none; }
   
-  /* ============================================
-     SETTINGS UI
-     ============================================ */
+  .welcome-logo {
+    color: #d4af37;
+    font-size: clamp(40px, 6vh, 64px);
+    letter-spacing: 8px;
+    font-weight: 300;
+    margin-bottom: 20px;
+  }
+  
+  .welcome-card {
+    background: rgba(212,175,55,0.05);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 16px;
+    padding: 4vh 4vw;
+    max-width: 600px;
+    width: 100%;
+  }
+  .welcome-card h2 {
+    color: #d4af37;
+    font-size: clamp(18px, 2.5vh, 24px);
+    margin-bottom: 16px;
+    letter-spacing: 2px;
+  }
+  .welcome-card p {
+    color: #aaa;
+    font-size: clamp(14px, 1.8vh, 17px);
+    line-height: 1.8;
+    margin-bottom: 12px;
+  }
+  .welcome-card .screen-id {
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(212,175,55,0.5);
+    border-radius: 10px;
+    padding: 16px 24px;
+    color: #d4af37;
+    font-family: monospace;
+    font-size: clamp(20px, 3vh, 28px);
+    letter-spacing: 4px;
+    margin: 20px 0;
+    display: inline-block;
+  }
+  .welcome-card .ip-info {
+    color: #888;
+    font-size: 13px;
+    margin-top: 16px;
+  }
+  
+  /* Settings */
   #setup {
     position: fixed;
     inset: 0;
@@ -165,10 +203,10 @@
     color: #fff;
     font-size: clamp(15px, 2vh, 18px);
     cursor: pointer;
-    transition: all 0.15s;
     text-align: center;
     outline: none;
     font-family: inherit;
+    transition: all 0.15s;
   }
   .option.selected {
     background: rgba(212,175,55,0.15);
@@ -177,31 +215,9 @@
   }
   .option:focus {
     border-color: #d4af37;
-    background: rgba(212,175,55,0.2);
     transform: scale(1.05);
     box-shadow: 0 0 0 3px rgba(212,175,55,0.3);
   }
-  
-  .group-display {
-    width: 100%;
-    padding: 24px;
-    background: rgba(0,0,0,0.5);
-    border: 2px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    color: #fff;
-    font-size: clamp(20px, 3vh, 28px);
-    text-align: center;
-    cursor: pointer;
-    letter-spacing: 2px;
-    font-family: monospace;
-    transition: all 0.15s;
-    outline: none;
-  }
-  .group-display:focus {
-    border-color: #d4af37;
-    box-shadow: 0 0 0 3px rgba(212,175,55,0.3);
-  }
-  .group-display.empty { color: #555; }
   
   .save-btn {
     width: 100%;
@@ -218,7 +234,6 @@
     margin-top: 4vh;
     font-family: inherit;
     outline: none;
-    transition: all 0.15s;
   }
   .save-btn:focus {
     transform: scale(1.02);
@@ -242,84 +257,7 @@
     margin: 0 4px;
   }
   
-  /* ============================================
-     ON-SCREEN KEYBOARD
-     ============================================ */
-  #keyboard {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.95);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    padding: 4vh 4vw;
-  }
-  #keyboard.show { display: flex; }
-  
-  .kb-box { width: 100%; max-width: 900px; }
-  .kb-display {
-    width: 100%;
-    padding: 24px;
-    background: rgba(0,0,0,0.6);
-    border: 2px solid rgba(212,175,55,0.5);
-    border-radius: 10px;
-    color: #d4af37;
-    font-size: clamp(24px, 3.5vh, 36px);
-    text-align: center;
-    margin-bottom: 3vh;
-    font-family: monospace;
-    letter-spacing: 3px;
-    min-height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .kb-display .cursor {
-    display: inline-block;
-    width: 3px;
-    height: 1em;
-    background: #d4af37;
-    margin-left: 4px;
-    animation: blink 1s infinite;
-  }
-  @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
-  }
-  
-  .kb-grid {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: 8px;
-  }
-  .kb-key {
-    aspect-ratio: 1;
-    background: rgba(255,255,255,0.05);
-    border: 2px solid rgba(255,255,255,0.1);
-    border-radius: 8px;
-    color: #fff;
-    font-size: clamp(16px, 2.5vh, 22px);
-    cursor: pointer;
-    outline: none;
-    font-family: inherit;
-    transition: all 0.1s;
-  }
-  .kb-key:focus {
-    border-color: #d4af37;
-    background: rgba(212,175,55,0.2);
-    color: #d4af37;
-    transform: scale(1.1);
-  }
-  .kb-key.action {
-    background: rgba(212,175,55,0.1);
-    color: #d4af37;
-  }
-  .kb-key.action:focus { background: rgba(212,175,55,0.3); }
-  
-  /* ============================================
-     STATUS & INDICATORS
-     ============================================ */
+  /* Indicators */
   #status {
     position: fixed;
     bottom: 12px;
@@ -353,7 +291,6 @@
     50% { opacity: 0.3; }
   }
   
-  /* Schedule indicator (top of screen when active) */
   #scheduleIndicator {
     position: fixed;
     top: 12px;
@@ -371,6 +308,36 @@
   }
   #scheduleIndicator.show { display: flex; }
   
+  #liveClock {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    padding: 8px 16px;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 20px;
+    color: #d4af37;
+    font-family: 'SF Mono', Monaco, monospace;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+  }
+  #liveClock.hidden { display: none; }
+  #liveClock .clock-time {
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+  #liveClock .clock-date {
+    font-size: 11px;
+    color: rgba(212,175,55,0.7);
+    border-left: 1px solid rgba(212,175,55,0.3);
+    padding-left: 10px;
+  }
+  
+  /* Hint */
   #hint {
     position: fixed;
     bottom: 30px;
@@ -386,11 +353,10 @@
     opacity: 0;
     transition: opacity 0.3s;
     pointer-events: none;
-    text-align: center;
   }
   #hint.show { opacity: 1; }
   
-  /* PIN entry overlay */
+  /* PIN entry */
   #pinEntry {
     position: fixed;
     inset: 0;
@@ -420,122 +386,70 @@
     font-size: 14px;
     text-align: center;
   }
-  
-  #loading {
-    position: fixed;
-    inset: 0;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-    flex-direction: column;
-    gap: 30px;
-  }
-  #loading.hidden { display: none; }
-  .logo-loader {
-    color: #d4af37;
-    font-size: 32px;
-    letter-spacing: 8px;
-    font-weight: 300;
-  }
-  .loader-bar {
-    width: 200px;
-    height: 2px;
-    background: rgba(212,175,55,0.2);
-    overflow: hidden;
-    border-radius: 2px;
-  }
-  .loader-bar::after {
-    content: '';
-    display: block;
-    width: 30%;
-    height: 100%;
-    background: #d4af37;
-    animation: loader 1.5s ease-in-out infinite;
-  }
-  @keyframes loader {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(400%); }
-  }
 </style>
 </head>
 <body>
 
-<!-- Invisible exit zones in 4 corners (click to open settings) -->
-<div class="exit-zone exit-zone-tl" data-corner="tl"></div>
-<div class="exit-zone exit-zone-tr" data-corner="tr"></div>
-<div class="exit-zone exit-zone-bl" data-corner="bl"></div>
-<div class="exit-zone exit-zone-br" data-corner="br"></div>
+<!-- Welcome screen (when not assigned to a playlist) -->
+<div id="welcomeScreen" class="hidden">
+  <div class="welcome-logo">CAFELAX</div>
+  <div class="welcome-card">
+    <h2>SCREEN READY</h2>
+    <p>هذه الشاشة مسجلة وفي انتظار تخصيصها لقائمة عرض</p>
+    <p>افتح لوحة التحكم وحدد قائمة العرض لهذه الشاشة:</p>
+    <div class="screen-id" id="welcomeScreenId">--</div>
+    <div class="ip-info" id="welcomeIp">--</div>
+  </div>
+</div>
 
-<!-- Setup screen -->
-<div id="setup">
+<!-- Settings (rotation/fit only - no group anymore) -->
+<div id="setup" class="hidden">
   <div class="setup-box">
-    <div class="setup-title">CAFELAX SIGNAGE</div>
-    <div class="setup-subtitle">استخدم أزرار الأسهم و OK من الريموت</div>
+    <div class="setup-title">SCREEN SETTINGS</div>
+    <div class="setup-subtitle">إعدادات الشاشة</div>
     
     <div class="field">
-      <label class="field-label">اسم المجموعة</label>
-      <button class="group-display empty" id="groupDisplay" tabindex="1">
-        اضغط OK لكتابة الاسم
-      </button>
+      <label class="field-label">Screen ID</label>
+      <div style="background:rgba(0,0,0,0.5);border:1px solid rgba(212,175,55,0.3);padding:16px;border-radius:10px;text-align:center;color:#d4af37;font-family:monospace;letter-spacing:3px;font-size:18px;" id="settingsScreenId">--</div>
     </div>
     
     <div class="field">
       <label class="field-label">تدوير الشاشة</label>
       <div class="options" id="rotationOptions">
-        <button class="option" data-value="0" tabindex="2">0°</button>
-        <button class="option" data-value="90" tabindex="3">90°</button>
-        <button class="option" data-value="180" tabindex="4">180°</button>
-        <button class="option" data-value="270" tabindex="5">270°</button>
+        <button class="option" data-value="0" tabindex="1">0°</button>
+        <button class="option" data-value="90" tabindex="2">90°</button>
+        <button class="option" data-value="180" tabindex="3">180°</button>
+        <button class="option" data-value="270" tabindex="4">270°</button>
       </div>
     </div>
     
     <div class="field">
       <label class="field-label">طريقة العرض</label>
       <div class="options" id="fitOptions">
-        <button class="option" data-value="cover" tabindex="6">ملء الشاشة</button>
-        <button class="option" data-value="contain" tabindex="7">احتواء كامل</button>
-        <button class="option" data-value="fill" tabindex="8">تمديد</button>
+        <button class="option" data-value="cover" tabindex="5">ملء الشاشة</button>
+        <button class="option" data-value="contain" tabindex="6">احتواء كامل</button>
+        <button class="option" data-value="fill" tabindex="7">تمديد</button>
       </div>
     </div>
     
-    <button class="save-btn" id="saveBtn" tabindex="9">START DISPLAY</button>
+    <button class="save-btn" id="saveBtn" tabindex="8">SAVE & APPLY</button>
     
     <div class="help-text">
       التنقل: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> · 
-      الاختيار: <kbd>OK</kbd>
+      الاختيار: <kbd>OK</kbd> · 
+      الخروج: <kbd>BACK</kbd>
     </div>
   </div>
 </div>
 
-<!-- On-screen keyboard -->
-<div id="keyboard">
-  <div class="kb-box">
-    <div class="kb-display" id="kbDisplay">
-      <span id="kbText"></span><span class="cursor"></span>
-    </div>
-    <div class="kb-grid" id="kbGrid"></div>
-    <div class="help-text" style="margin-top:3vh;">
-      <kbd>BACK</kbd> للخروج · <kbd>OK</kbd> للاختيار
-    </div>
-  </div>
-</div>
-
-<!-- PIN entry (alternative way to access settings) -->
+<!-- PIN Entry -->
 <div id="pinEntry">
   <div class="pin-title">SETTINGS ACCESS</div>
   <div class="pin-display" id="pinDisplay"></div>
   <div class="pin-help">
     اكتب الكود: <strong style="color:#d4af37;">1234</strong><br>
-    <span style="font-size:12px;opacity:0.5;">استخدم الأسهم 1=↑ 2=→ 3=↓ 4=←</span>
+    <span style="font-size:12px;opacity:0.5;">1=↑ 2=→ 3=↓ 4=←</span>
   </div>
-</div>
-
-<!-- Loading -->
-<div id="loading" class="hidden">
-  <div class="logo-loader">CAFELAX</div>
-  <div class="loader-bar"></div>
 </div>
 
 <!-- Display stage -->
@@ -543,89 +457,226 @@
   <div id="stage"></div>
 </div>
 
-<!-- Status -->
+<!-- Indicators -->
 <div id="status">
   <div class="status-dot" id="statusDot"></div>
   <span id="statusText">Online</span>
 </div>
 
-<!-- Schedule indicator -->
 <div id="scheduleIndicator">
   <span>📅</span>
   <span id="scheduleName"></span>
 </div>
 
-<!-- Hint -->
+<div id="liveClock">
+  <div class="clock-time" id="clockTime">--:--:--</div>
+  <div class="clock-date" id="clockDate">---</div>
+</div>
+
 <div id="hint"></div>
 
 <script>
 // ============================================
-// CAFELAX TV DISPLAY
+// CAFELAX TV DISPLAY v2
 // ============================================
 
 const CONFIG = {
   API_URL: window.location.origin + '/api',
   POLL_INTERVAL: 30000,
   HEARTBEAT_INTERVAL: 60000,
-  EXIT_PIN: '1234' // الكود لفتح الإعدادات
+  EXIT_PIN: '1234'
 };
 
 let state = {
-  groupName: localStorage.getItem('cafelax_group') || '',
+  screenId: localStorage.getItem('cafelax_screenId') || null,
   rotation: parseInt(localStorage.getItem('cafelax_rotation') || '0'),
   fitMode: localStorage.getItem('cafelax_fit') || 'cover',
   playlist: JSON.parse(localStorage.getItem('cafelax_playlist') || '[]'),
   playlistVersion: localStorage.getItem('cafelax_version') || '0',
   serverTimeOffset: 0,
   isOnline: navigator.onLine,
+  registered: false,
+  hasPlaylist: false
 };
 
-let tempSettings = {
-  group: state.groupName,
-  rotation: state.rotation,
-  fit: state.fitMode
-};
+let tempSettings = { rotation: state.rotation, fit: state.fitMode };
 
 // ============================================
-// SETTINGS UI
+// REGISTRATION & SYNC
+// ============================================
+async function registerScreen() {
+  try {
+    const res = await fetch(`${CONFIG.API_URL}/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        rotation: state.rotation,
+        fitMode: state.fitMode
+      })
+    });
+    
+    if (!res.ok) throw new Error('Registration failed');
+    const data = await res.json();
+    
+    state.screenId = data.screenId;
+    localStorage.setItem('cafelax_screenId', data.screenId);
+    
+    if (data.config) {
+      // Apply server config (overrides local)
+      if (data.config.rotation !== undefined) state.rotation = data.config.rotation;
+      if (data.config.fitMode) state.fitMode = data.config.fitMode;
+    }
+    
+    return true;
+  } catch (err) {
+    console.warn('Registration failed:', err);
+    return false;
+  }
+}
+
+async function syncWithServer() {
+  if (!state.isOnline || !state.screenId) return;
+  updateStatus('syncing');
+  
+  try {
+    const startTime = Date.now();
+    const res = await fetch(
+      `${CONFIG.API_URL}/screen/config?screenId=${state.screenId}&v=${state.playlistVersion}`,
+      { cache: 'no-store' }
+    );
+    const latency = (Date.now() - startTime) / 2;
+    
+    if (!res.ok) throw new Error('Server error');
+    const data = await res.json();
+    
+    if (data.serverTime) {
+      state.serverTimeOffset = data.serverTime + latency - Date.now();
+    }
+    
+    if (!data.registered) {
+      // Re-register
+      await registerScreen();
+      return;
+    }
+    
+    state.registered = true;
+    
+    // Apply config from server
+    let configChanged = false;
+    if (data.rotation !== undefined && data.rotation !== state.rotation) {
+      state.rotation = data.rotation;
+      localStorage.setItem('cafelax_rotation', state.rotation);
+      configChanged = true;
+    }
+    if (data.fitMode && data.fitMode !== state.fitMode) {
+      state.fitMode = data.fitMode;
+      localStorage.setItem('cafelax_fit', state.fitMode);
+      configChanged = true;
+    }
+    if (configChanged) applyRotation();
+    
+    // Schedule indicator
+    if (data.source === 'schedule' && data.scheduleName) {
+      updateScheduleIndicator(data.scheduleName);
+    } else {
+      updateScheduleIndicator(null);
+    }
+    
+    // Update playlist if changed
+    if (data.version && data.version !== state.playlistVersion) {
+      state.playlist = data.playlist || [];
+      state.playlistVersion = data.version;
+      localStorage.setItem('cafelax_playlist', JSON.stringify(state.playlist));
+      localStorage.setItem('cafelax_version', data.version);
+      await preloadAssets(state.playlist);
+      
+      // Restart playback
+      state.hasPlaylist = state.playlist.length > 0;
+      if (state.hasPlaylist) {
+        document.getElementById('welcomeScreen').classList.add('hidden');
+        startPlayback();
+      } else {
+        showWelcomeScreen();
+      }
+    } else if (state.playlist.length === 0) {
+      showWelcomeScreen();
+    } else if (!state.hasPlaylist) {
+      state.hasPlaylist = true;
+      document.getElementById('welcomeScreen').classList.add('hidden');
+      startPlayback();
+    }
+    
+    updateStatus('online');
+  } catch (err) {
+    console.warn('Sync failed:', err.message);
+    updateStatus('offline');
+  }
+}
+
+async function preloadAssets(playlist) {
+  const promises = playlist.map(item => {
+    return new Promise((resolve) => {
+      if (item.type === 'video') {
+        const v = document.createElement('video');
+        v.src = item.url;
+        v.preload = 'auto';
+        v.onloadeddata = resolve;
+        v.onerror = resolve;
+      } else {
+        const img = new Image();
+        img.src = item.url;
+        img.onload = resolve;
+        img.onerror = resolve;
+      }
+    });
+  });
+  await Promise.all(promises);
+}
+
+// ============================================
+// WELCOME SCREEN
+// ============================================
+async function showWelcomeScreen() {
+  state.hasPlaylist = false;
+  
+  // Get IP
+  let ip = '--';
+  try {
+    const res = await fetch('https://api.ipify.org?format=json');
+    const data = await res.json();
+    ip = data.ip;
+  } catch(e) {}
+  
+  document.getElementById('welcomeScreenId').textContent = state.screenId || '--';
+  document.getElementById('welcomeIp').textContent = `IP: ${ip}`;
+  document.getElementById('settingsScreenId').textContent = state.screenId || '--';
+  
+  document.getElementById('welcomeScreen').classList.remove('hidden');
+}
+
+// ============================================
+// SETTINGS
 // ============================================
 function openSettings() {
-  tempSettings = {
-    group: state.groupName,
-    rotation: state.rotation,
-    fit: state.fitMode
-  };
+  tempSettings = { rotation: state.rotation, fit: state.fitMode };
   updateSettingsUI();
+  document.getElementById('settingsScreenId').textContent = state.screenId || '--';
   document.getElementById('setup').classList.remove('hidden');
-  setTimeout(() => document.getElementById('groupDisplay').focus(), 100);
+  setTimeout(() => document.querySelector('#rotationOptions .option').focus(), 100);
 }
 
 function closeSettings() {
-  if (state.groupName) {
-    document.getElementById('setup').classList.add('hidden');
-  }
+  document.getElementById('setup').classList.add('hidden');
 }
 
 function updateSettingsUI() {
-  const gd = document.getElementById('groupDisplay');
-  if (tempSettings.group) {
-    gd.textContent = tempSettings.group;
-    gd.classList.remove('empty');
-  } else {
-    gd.textContent = 'اضغط OK لكتابة الاسم';
-    gd.classList.add('empty');
-  }
-  
   document.querySelectorAll('#rotationOptions .option').forEach(btn => {
     btn.classList.toggle('selected', parseInt(btn.dataset.value) === tempSettings.rotation);
   });
-  
   document.querySelectorAll('#fitOptions .option').forEach(btn => {
     btn.classList.toggle('selected', btn.dataset.value === tempSettings.fit);
   });
 }
-
-document.getElementById('groupDisplay').addEventListener('click', openKeyboard);
 
 document.querySelectorAll('#rotationOptions .option').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -641,29 +692,19 @@ document.querySelectorAll('#fitOptions .option').forEach(btn => {
   });
 });
 
-document.getElementById('saveBtn').addEventListener('click', saveSettings);
-
-function saveSettings() {
-  if (!tempSettings.group) {
-    alert('من فضلك اكتب اسم المجموعة');
-    return;
-  }
-  
-  state.groupName = tempSettings.group;
+document.getElementById('saveBtn').addEventListener('click', async () => {
   state.rotation = tempSettings.rotation;
   state.fitMode = tempSettings.fit;
   
-  localStorage.setItem('cafelax_group', state.groupName);
   localStorage.setItem('cafelax_rotation', state.rotation);
   localStorage.setItem('cafelax_fit', state.fitMode);
   
   applyRotation();
-  document.getElementById('setup').classList.add('hidden');
+  closeSettings();
   
-  // إعادة تشغيل
-  state.playlistVersion = '0'; // عشان يعيد تحميل القائمة
-  init();
-}
+  // Update on server too
+  await registerScreen();
+});
 
 function applyRotation() {
   const rotator = document.getElementById('rotator');
@@ -674,74 +715,8 @@ function applyRotation() {
 }
 
 // ============================================
-// ON-SCREEN KEYBOARD
+// EXIT METHODS
 // ============================================
-const KB_LAYOUT = [
-  ['1','2','3','4','5','6','7','8','9','0'],
-  ['q','w','e','r','t','y','u','i','o','p'],
-  ['a','s','d','f','g','h','j','k','l','-'],
-  ['z','x','c','v','b','n','m','_','⌫','✓']
-];
-
-function buildKeyboard() {
-  const grid = document.getElementById('kbGrid');
-  grid.innerHTML = '';
-  let tabIdx = 100;
-  
-  KB_LAYOUT.flat().forEach(key => {
-    const btn = document.createElement('button');
-    btn.className = 'kb-key';
-    btn.textContent = key;
-    btn.tabIndex = tabIdx++;
-    
-    if (key === '⌫') {
-      btn.classList.add('action');
-      btn.addEventListener('click', () => {
-        tempSettings.group = tempSettings.group.slice(0, -1);
-        updateKeyboardDisplay();
-      });
-    } else if (key === '✓') {
-      btn.classList.add('action');
-      btn.addEventListener('click', closeKeyboard);
-    } else {
-      btn.addEventListener('click', () => {
-        if (tempSettings.group.length < 30) {
-          tempSettings.group += key;
-          updateKeyboardDisplay();
-        }
-      });
-    }
-    
-    grid.appendChild(btn);
-  });
-}
-
-function openKeyboard() {
-  document.getElementById('keyboard').classList.add('show');
-  updateKeyboardDisplay();
-  setTimeout(() => {
-    const keys = document.querySelectorAll('.kb-key');
-    if (keys[20]) keys[20].focus();
-  }, 100);
-}
-
-function closeKeyboard() {
-  document.getElementById('keyboard').classList.remove('show');
-  updateSettingsUI();
-  setTimeout(() => document.getElementById('groupDisplay').focus(), 100);
-}
-
-function updateKeyboardDisplay() {
-  document.getElementById('kbText').textContent = tempSettings.group || '';
-}
-
-buildKeyboard();
-
-// ============================================
-// MULTIPLE EXIT METHODS
-// ============================================
-
-// طريقة 1: PIN code (1234 = ↑→↓←)
 let pinBuffer = '';
 let pinTimer;
 
@@ -750,10 +725,7 @@ function showPinEntry() {
   document.getElementById('pinDisplay').textContent = '';
   document.getElementById('pinEntry').classList.add('show');
   clearTimeout(pinTimer);
-  pinTimer = setTimeout(() => {
-    document.getElementById('pinEntry').classList.remove('show');
-    pinBuffer = '';
-  }, 10000);
+  pinTimer = setTimeout(hidePinEntry, 10000);
 }
 
 function hidePinEntry() {
@@ -762,8 +734,8 @@ function hidePinEntry() {
   clearTimeout(pinTimer);
 }
 
-function addPinDigit(digit) {
-  pinBuffer += digit;
+function addPinDigit(d) {
+  pinBuffer += d;
   document.getElementById('pinDisplay').textContent = '•'.repeat(pinBuffer.length);
   
   if (pinBuffer.length >= 4) {
@@ -780,36 +752,6 @@ function addPinDigit(digit) {
   }
 }
 
-// طريقة 2: ضغط أركان الشاشة 4 مرات بالتتابع
-let cornerSequence = [];
-let cornerTimer;
-
-function checkCornerSequence(corner) {
-  cornerSequence.push(corner);
-  clearTimeout(cornerTimer);
-  cornerTimer = setTimeout(() => cornerSequence = [], 3000);
-  
-  // الترتيب الصحيح: TL → TR → BR → BL (عكس عقارب الساعة من الأعلى)
-  const correct = ['tl', 'tr', 'br', 'bl'];
-  
-  if (cornerSequence.length >= 4) {
-    const last4 = cornerSequence.slice(-4);
-    if (JSON.stringify(last4) === JSON.stringify(correct)) {
-      cornerSequence = [];
-      openSettings();
-    } else {
-      cornerSequence = [];
-    }
-  }
-  
-  showHint(`${cornerSequence.length}/4`);
-}
-
-document.querySelectorAll('.exit-zone').forEach(zone => {
-  zone.addEventListener('click', () => checkCornerSequence(zone.dataset.corner));
-});
-
-// طريقة 3: العد 5 مرات على OK (الأصلية)
 let okPressCount = 0;
 let okPressTimer;
 
@@ -834,28 +776,22 @@ function showHint(text) {
   window._hintTimeout = setTimeout(() => hint.classList.remove('show'), 1500);
 }
 
-// ============================================
-// REMOTE NAVIGATION
-// ============================================
+// Long press OK
+let okPressStart = null;
+
 document.addEventListener('keydown', (e) => {
-  const keyboardOpen = document.getElementById('keyboard').classList.contains('show');
   const settingsOpen = !document.getElementById('setup').classList.contains('hidden');
   const pinOpen = document.getElementById('pinEntry').classList.contains('show');
   
-  // BACK button
+  // BACK
   if (e.key === 'Escape' || e.keyCode === 461 || e.keyCode === 10009) {
     e.preventDefault();
-    if (pinOpen) {
-      hidePinEntry();
-    } else if (keyboardOpen) {
-      closeKeyboard();
-    } else if (settingsOpen && state.groupName) {
-      closeSettings();
-    }
+    if (pinOpen) hidePinEntry();
+    else if (settingsOpen) closeSettings();
     return;
   }
   
-  // PIN entry mode
+  // PIN entry
   if (pinOpen) {
     e.preventDefault();
     if (e.key === 'ArrowUp') addPinDigit('1');
@@ -865,84 +801,43 @@ document.addEventListener('keydown', (e) => {
     return;
   }
   
-  // Arrow navigation in keyboard or settings
-  if (keyboardOpen && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-    e.preventDefault();
-    handleKeyboardNav(e.key);
-    return;
-  }
-  
+  // Settings nav
   if (settingsOpen && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
     e.preventDefault();
     handleSettingsNav(e.key);
     return;
   }
   
-  // Quick access methods (when on display)
-  if (!settingsOpen && !keyboardOpen && !pinOpen) {
-    // Menu button
+  // Quick access
+  if (!settingsOpen && !pinOpen) {
     if (e.key === 'ContextMenu' || e.keyCode === 462 || e.keyCode === 18) {
       e.preventDefault();
       openSettings();
       return;
     }
-    
-    // OK pressed 5 times
-    if (e.key === 'Enter') {
-      handleOkPress();
-    }
-    
-    // Long press detection - hold OK for 3 seconds
-    // (handled separately below)
-    
-    // Color buttons on remote (Red = exit)
-    // Red button keycode varies: 403, 0, etc.
     if (e.keyCode === 403 || e.key === 'F1' || e.keyCode === 116) {
       e.preventDefault();
       showPinEntry();
       return;
     }
+    if (e.key === 'Enter') {
+      handleOkPress();
+      if (!okPressStart) {
+        okPressStart = Date.now();
+        setTimeout(() => {
+          if (okPressStart && Date.now() - okPressStart >= 2500) {
+            showPinEntry();
+            okPressStart = null;
+          }
+        }, 2500);
+      }
+    }
   }
 });
 
-// Long press OK to open PIN entry
-let okPressStart = null;
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && !okPressStart) {
-    okPressStart = Date.now();
-    setTimeout(() => {
-      if (okPressStart && Date.now() - okPressStart >= 2500) {
-        showPinEntry();
-        okPressStart = null;
-      }
-    }, 2500);
-  }
-});
 document.addEventListener('keyup', (e) => {
   if (e.key === 'Enter') okPressStart = null;
 });
-
-function handleKeyboardNav(direction) {
-  const keys = Array.from(document.querySelectorAll('.kb-key'));
-  const focused = document.activeElement;
-  const currentIdx = keys.indexOf(focused);
-  if (currentIdx === -1) {
-    keys[0].focus();
-    return;
-  }
-  
-  const cols = 10;
-  let newIdx = currentIdx;
-  
-  if (direction === 'ArrowRight') newIdx = currentIdx + 1;
-  else if (direction === 'ArrowLeft') newIdx = currentIdx - 1;
-  else if (direction === 'ArrowDown') newIdx = currentIdx + cols;
-  else if (direction === 'ArrowUp') newIdx = currentIdx - cols;
-  
-  if (newIdx >= 0 && newIdx < keys.length) {
-    keys[newIdx].focus();
-  }
-}
 
 function handleSettingsNav(direction) {
   const focused = document.activeElement;
@@ -951,22 +846,20 @@ function handleSettingsNav(direction) {
   if (isInGroup) {
     const parent = focused.parentElement;
     const siblings = Array.from(parent.querySelectorAll('.option'));
-    const siblingIdx = siblings.indexOf(focused);
+    const idx = siblings.indexOf(focused);
     
-    if (direction === 'ArrowLeft' && siblingIdx > 0) {
-      siblings[siblingIdx - 1].focus();
+    if (direction === 'ArrowLeft' && idx > 0) {
+      siblings[idx - 1].focus();
       return;
     }
-    if (direction === 'ArrowRight' && siblingIdx < siblings.length - 1) {
-      siblings[siblingIdx + 1].focus();
+    if (direction === 'ArrowRight' && idx < siblings.length - 1) {
+      siblings[idx + 1].focus();
       return;
     }
   }
   
   if (direction === 'ArrowDown') {
-    if (focused.id === 'groupDisplay') {
-      document.querySelector('#rotationOptions .option').focus();
-    } else if (focused.parentElement.id === 'rotationOptions') {
+    if (focused.parentElement.id === 'rotationOptions') {
       document.querySelector('#fitOptions .option').focus();
     } else if (focused.parentElement.id === 'fitOptions') {
       document.getElementById('saveBtn').focus();
@@ -976,83 +869,38 @@ function handleSettingsNav(direction) {
       document.querySelector('#fitOptions .option').focus();
     } else if (focused.parentElement.id === 'fitOptions') {
       document.querySelector('#rotationOptions .option').focus();
-    } else if (focused.parentElement.id === 'rotationOptions') {
-      document.getElementById('groupDisplay').focus();
     }
   }
 }
 
 // ============================================
-// MAIN INIT
-// ============================================
-async function init() {
-  if (!state.groupName) {
-    openSettings();
-    return;
-  }
-  
-  applyRotation();
-  document.getElementById('setup').classList.add('hidden');
-  
-  // منع الشاشة من النوم
-  preventSleep();
-  
-  showLoading(true);
-  await syncWithServer();
-  showLoading(false);
-  startPlayback();
-  startPolling();
-  startHeartbeat();
-}
-
-// ============================================
-// PREVENT SLEEP / SCREEN SAVER
+// PREVENT SLEEP
 // ============================================
 let wakeLock = null;
 let sleepPreventVideo = null;
 
 async function preventSleep() {
-  // الطريقة 1: Wake Lock API (الأحدث والأفضل)
   if ('wakeLock' in navigator) {
     try {
       wakeLock = await navigator.wakeLock.request('screen');
-      console.log('Wake Lock active');
-      
       wakeLock.addEventListener('release', () => {
-        console.log('Wake Lock released, re-acquiring...');
-        // إعادة الـ wake lock تلقائياً
         setTimeout(() => preventSleep(), 1000);
       });
-    } catch (err) {
-      console.warn('Wake Lock failed:', err);
-    }
+    } catch (err) {}
   }
-  
-  // الطريقة 2: تشغيل فيديو مخفي (للأجهزة القديمة اللي مفيهاش Wake Lock)
   startSleepPreventVideo();
-  
-  // الطريقة 3: محاكاة حركة الماوس بشكل دوري
   startActivitySimulation();
 }
 
 function startSleepPreventVideo() {
   if (sleepPreventVideo) return;
   
-  // فيديو شفاف صغير جداً يفضل شغال في الخلفية
-  // الفيديو ده base64 لفيديو فاضي 1 ثانية (loop)
-  const blankVideoData = 'data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAr1tZGF0AAACrgYF//+q3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE2NCByMzAyNCBkN2NhMzdiIC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAyMyAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTMgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MzoweDExMyBtZT1oZXggc3VibWU9NyBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0xIG1lX3JhbmdlPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MSA4eDhkY3Q9MSBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bza2lwPTEgY2hyb21hX3FwX29mZnNldD0tMiB0aHJlYWRzPTEgbG9va2FoZWFkX3RocmVhZHM9MSBzbGljZWRfdGhyZWFkcz0wIG5yPTAgZGVjaW1hdGU9MSBpbnRlcmxhY2VkPTAgYmx1cmF5X2NvbXBhdD0wIGNvbnN0cmFpbmVkX2ludHJhPTAgYmZyYW1lcz0zIGJfcHlyYW1pZD0yIGJfYWRhcHQ9MSBiX2JpYXM9MCBkaXJlY3Q9MSB3ZWlnaHRiPTEgb3Blbl9nb3A9MCB3ZWlnaHRwPTIga2V5aW50PTI1MCBrZXlpbnRfbWluPTI1IHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29rYWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW49MCBxcG1heD02OSBxcHN0ZXA9NCBpcF9yYXRpbz0xLjQwIGFxPTE6MS4wMACAAAAAFmWIhAAv//71sXwKas';
-  
-  // طريقة بديلة - فيديو محلي فارغ 
   sleepPreventVideo = document.createElement('video');
-  sleepPreventVideo.setAttribute('muted', '');
-  sleepPreventVideo.setAttribute('playsinline', '');
-  sleepPreventVideo.setAttribute('loop', '');
-  sleepPreventVideo.setAttribute('autoplay', '');
   sleepPreventVideo.muted = true;
   sleepPreventVideo.loop = true;
+  sleepPreventVideo.setAttribute('playsinline', '');
   sleepPreventVideo.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1;left:0;top:0;';
   
-  // إنشاء فيديو فاضي عن طريق canvas
   const canvas = document.createElement('canvas');
   canvas.width = 64;
   canvas.height = 64;
@@ -1061,140 +909,55 @@ function startSleepPreventVideo() {
   ctx.fillRect(0, 0, 64, 64);
   
   if (canvas.captureStream) {
-    const stream = canvas.captureStream(1); // 1 fps يكفي
-    sleepPreventVideo.srcObject = stream;
+    sleepPreventVideo.srcObject = canvas.captureStream(1);
     document.body.appendChild(sleepPreventVideo);
-    sleepPreventVideo.play().catch(err => console.warn('Sleep prevent video failed:', err));
+    sleepPreventVideo.play().catch(() => {});
   }
 }
 
 function startActivitySimulation() {
-  // تحريك مؤشر صغير كل 30 ثانية للحفاظ على الجهاز نشط
   setInterval(() => {
-    // إعادة تشغيل أي فيديو متوقف
     document.querySelectorAll('video').forEach(v => {
       if (v.paused) v.play().catch(() => {});
     });
-    
-    // إعادة الـ wake lock لو اتقطع
-    if (!wakeLock || wakeLock.released) {
-      preventSleep();
-    }
+    if (!wakeLock || wakeLock.released) preventSleep();
   }, 30000);
 }
 
-// إعادة الـ wake lock لما الصفحة ترجع تظهر (بعد ما كانت hidden)
 document.addEventListener('visibilitychange', async () => {
   if (document.visibilityState === 'visible') {
-    if (!wakeLock || wakeLock.released) {
-      await preventSleep();
-    }
-    // إعادة تشغيل أي فيديو متوقف
+    if (!wakeLock || wakeLock.released) await preventSleep();
     document.querySelectorAll('video').forEach(v => {
       if (v.paused) v.play().catch(() => {});
     });
   }
 });
 
-function showLoading(show) {
-  document.getElementById('loading').classList.toggle('hidden', !show);
-}
-
-function updateStatus(status) {
-  const dot = document.getElementById('statusDot');
-  const text = document.getElementById('statusText');
-  const el = document.getElementById('status');
-  el.classList.add('show');
-  
-  dot.className = 'status-dot ' + (status === 'online' ? '' : status);
-  text.textContent = {
-    online: 'Online',
-    offline: 'Offline (Cached)',
-    syncing: 'Syncing...'
-  }[status] || status;
-  
-  clearTimeout(window._statusTimeout);
-  window._statusTimeout = setTimeout(() => el.classList.remove('show'), 3000);
-}
-
-function updateScheduleIndicator(scheduleName) {
-  const ind = document.getElementById('scheduleIndicator');
-  if (scheduleName) {
-    document.getElementById('scheduleName').textContent = scheduleName;
-    ind.classList.add('show');
-  } else {
-    ind.classList.remove('show');
-  }
-}
-
 // ============================================
-// SYNC WITH SERVER (with schedule support)
+// CLOCK
 // ============================================
-let nextScheduleChange = null;
-
-async function syncWithServer() {
-  if (!state.isOnline) return;
-  updateStatus('syncing');
-  
-  try {
-    const startTime = Date.now();
-    const res = await fetch(`${CONFIG.API_URL}/playlist?group=${encodeURIComponent(state.groupName)}&v=${state.playlistVersion}`, {
-      cache: 'no-store'
-    });
-    const latency = (Date.now() - startTime) / 2;
+function startClock() {
+  const updateClock = () => {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    const timeStr = `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
     
-    if (!res.ok) throw new Error('Server error');
-    const data = await res.json();
+    const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+    const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+    const dateStr = `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]}`;
     
-    if (data.serverTime) {
-      state.serverTimeOffset = data.serverTime + latency - Date.now();
-    }
-    
-    // معالجة الـ schedule indicator
-    if (data.source === 'schedule' && data.scheduleName) {
-      updateScheduleIndicator(data.scheduleName);
-    } else {
-      updateScheduleIndicator(null);
-    }
-    
-    // حفظ موعد التغيير القادم
-    nextScheduleChange = data.nextChange;
-    
-    if (data.version && data.version !== state.playlistVersion) {
-      state.playlist = data.playlist || [];
-      state.playlistVersion = data.version;
-      localStorage.setItem('cafelax_playlist', JSON.stringify(state.playlist));
-      localStorage.setItem('cafelax_version', data.version);
-      await preloadAssets(state.playlist);
-      
-      // إعادة تشغيل العرض بالمحتوى الجديد
-      startPlayback();
-    }
-    
-    updateStatus('online');
-  } catch (err) {
-    updateStatus('offline');
-  }
-}
-
-async function preloadAssets(playlist) {
-  const promises = playlist.map(item => {
-    return new Promise((resolve) => {
-      if (item.type === 'video') {
-        const v = document.createElement('video');
-        v.src = item.url;
-        v.preload = 'auto';
-        v.onloadeddata = resolve;
-        v.onerror = resolve;
-      } else {
-        const img = new Image();
-        img.src = item.url;
-        img.onload = resolve;
-        img.onerror = resolve;
-      }
-    });
-  });
-  await Promise.all(promises);
+    const t = document.getElementById('clockTime');
+    const d = document.getElementById('clockDate');
+    if (t) t.textContent = timeStr;
+    if (d) d.textContent = dateStr;
+  };
+  updateClock();
+  setInterval(updateClock, 1000);
 }
 
 // ============================================
@@ -1227,8 +990,7 @@ function calculateCurrentSlide() {
 
 function startPlayback() {
   if (!state.playlist.length) {
-    showEmptyState();
-    setTimeout(startPlayback, 5000);
+    showWelcomeScreen();
     return;
   }
   
@@ -1281,58 +1043,80 @@ function startPlayback() {
   showNextSlide();
 }
 
-function showEmptyState() {
-  const stage = document.getElementById('stage');
-  stage.innerHTML = `
-    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;background:#000;">
-      <div style="color:#d4af37;font-size:48px;letter-spacing:8px;font-weight:300;">CAFELAX</div>
-      <div style="color:#666;font-size:14px;">في انتظار المحتوى... (${state.groupName})</div>
-    </div>
-  `;
+// ============================================
+// STATUS
+// ============================================
+function updateStatus(status) {
+  const dot = document.getElementById('statusDot');
+  const text = document.getElementById('statusText');
+  const el = document.getElementById('status');
+  el.classList.add('show');
+  
+  dot.className = 'status-dot ' + (status === 'online' ? '' : status);
+  text.textContent = {
+    online: 'Online',
+    offline: 'Offline',
+    syncing: 'Syncing'
+  }[status] || status;
+  
+  clearTimeout(window._statusTimeout);
+  window._statusTimeout = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function updateScheduleIndicator(name) {
+  const ind = document.getElementById('scheduleIndicator');
+  if (name) {
+    document.getElementById('scheduleName').textContent = name;
+    ind.classList.add('show');
+  } else {
+    ind.classList.remove('show');
+  }
 }
 
 // ============================================
-// POLLING & HEARTBEAT
+// HEARTBEAT
 // ============================================
-function startPolling() {
-  setInterval(() => {
-    if (state.isOnline) {
-      syncWithServer();
-      
-      // Check إذا كنا قريبين من schedule change
-      if (nextScheduleChange) {
-        const timeUntil = nextScheduleChange - Date.now();
-        // لو في خلال 30 ثانية، اعمل sync فوراً
-        if (timeUntil > 0 && timeUntil < 30000) {
-          setTimeout(syncWithServer, timeUntil + 1000);
-        }
-      }
-    }
-  }, CONFIG.POLL_INTERVAL);
-}
-
 function startHeartbeat() {
-  const sendHeartbeat = async () => {
-    if (!state.isOnline) return;
+  const send = async () => {
+    if (!state.isOnline || !state.screenId) return;
     try {
       await fetch(`${CONFIG.API_URL}/heartbeat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          group: state.groupName,
-          version: state.playlistVersion,
-          timestamp: Date.now()
-        })
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Screen-Id': state.screenId
+        },
+        body: JSON.stringify({ timestamp: Date.now() })
       });
     } catch (e) {}
   };
-  sendHeartbeat();
-  setInterval(sendHeartbeat, CONFIG.HEARTBEAT_INTERVAL);
+  send();
+  setInterval(send, CONFIG.HEARTBEAT_INTERVAL);
 }
 
 // ============================================
-// AUTO-RECOVERY
+// MAIN INIT
 // ============================================
+async function init() {
+  // Register screen on first visit
+  if (!state.screenId) {
+    await registerScreen();
+  }
+  
+  applyRotation();
+  preventSleep();
+  startClock();
+  
+  await syncWithServer();
+  
+  setInterval(() => {
+    if (state.isOnline) syncWithServer();
+  }, CONFIG.POLL_INTERVAL);
+  
+  startHeartbeat();
+}
+
+// Online/offline
 window.addEventListener('online', () => {
   state.isOnline = true;
   updateStatus('online');
@@ -1343,17 +1127,16 @@ window.addEventListener('offline', () => {
   updateStatus('offline');
 });
 
+// Watchdog
 setInterval(() => {
-  if (window._lastSlideTime && Date.now() - window._lastSlideTime > 120000) {
+  if (state.hasPlaylist && window._lastSlideTime && Date.now() - window._lastSlideTime > 120000) {
     startPlayback();
   }
 }, 30000);
 
+// Auto-refresh every 6 hours
 setTimeout(() => location.reload(), 6 * 60 * 60 * 1000);
 
-// ============================================
-// START
-// ============================================
 init();
 </script>
 </body>

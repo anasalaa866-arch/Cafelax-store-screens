@@ -379,6 +379,10 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Screen-Id');
+  // السماح للموقع يفتح في iframe من أي دومين (لـ OrderPro integration)
+  res.setHeader('Content-Security-Policy', "frame-ancestors *");
+  // Express by default doesn't set X-Frame-Options, but ensure it's not restricting
+  res.removeHeader('X-Frame-Options');
   if (req.method === 'OPTIONS') return res.sendStatus(200);
   next();
 });

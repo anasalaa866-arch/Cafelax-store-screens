@@ -39,6 +39,46 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .header-clock {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 20px;
+    background: rgba(212,175,55,0.05);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 12px;
+    font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+  }
+  .header-clock .clock-icon {
+    color: var(--gold);
+    font-size: 16px;
+  }
+  .header-clock .clock-time {
+    color: var(--gold);
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+  .header-clock .clock-divider {
+    width: 1px;
+    height: 16px;
+    background: rgba(212,175,55,0.3);
+  }
+  .header-clock .clock-date {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .header-clock .timezone {
+    color: var(--muted);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: rgba(0,0,0,0.3);
+    padding: 2px 8px;
+    border-radius: 8px;
   }
   .logo-text {
     font-size: 22px;
@@ -721,6 +761,13 @@
     outline: none;
   }
   .form-field input:focus { border-color: var(--gold); }
+  .form-field .time-hint {
+    font-size: 11px;
+    color: var(--gold);
+    margin-top: 4px;
+    min-height: 16px;
+  }
+  .form-field .time-hint.error { color: var(--red); }
   
   .switch {
     position: relative;
@@ -755,6 +802,15 @@
     <span class="logo-text">CAFELAX</span>
     <span class="logo-sub">Signage Control</span>
   </div>
+  
+  <div class="header-clock">
+    <span class="clock-icon">🕐</span>
+    <span class="clock-time" id="hdrClockTime">--:--:--</span>
+    <span class="clock-divider"></span>
+    <span class="clock-date" id="hdrClockDate">---</span>
+    <span class="timezone" id="hdrTimezone">--</span>
+  </div>
+  
   <div>
     <button class="btn btn-sm" onclick="loadState()">↻ Refresh</button>
   </div>
@@ -921,10 +977,12 @@
       <div class="form-field">
         <label>من تاريخ</label>
         <input type="datetime-local" id="scheduleStart">
+        <div class="time-hint" id="startHint"></div>
       </div>
       <div class="form-field">
         <label>إلى تاريخ</label>
         <input type="datetime-local" id="scheduleEnd">
+        <div class="time-hint" id="endHint"></div>
       </div>
     </div>
     
@@ -1633,9 +1691,74 @@ function openScheduleModal(schedule) {
     currentScheduleItems = [];
   }
   
+  updateTimeHints();
   renderScheduleItems();
   document.getElementById('scheduleModal').classList.add('show');
 }
+
+// تحديث المساعدات الزمنية تحت كل حقل تاريخ
+function updateTimeHints() {
+  const startVal = document.getElementById('scheduleStart').value;
+  const endVal = document.getElementById('scheduleEnd').value;
+  const startHint = document.getElementById('startHint');
+  const endHint = document.getElementById('endHint');
+  
+  if (startVal) {
+    startHint.textContent = formatRelative(new Date(startVal));
+    startHint.classList.remove('error');
+  } else {
+    startHint.textContent = '';
+  }
+  
+  if (endVal) {
+    if (startVal && new Date(endVal) <= new Date(startVal)) {
+      endHint.textContent = '⚠ لازم يكون بعد وقت البداية';
+      endHint.classList.add('error');
+    } else if (startVal) {
+      const duration = new Date(endVal) - new Date(startVal);
+      endHint.textContent = `مدة الحملة: ${formatDuration(duration)}`;
+      endHint.classList.remove('error');
+    } else {
+      endHint.textContent = formatRelative(new Date(endVal));
+      endHint.classList.remove('error');
+    }
+  } else {
+    endHint.textContent = '';
+  }
+}
+
+// نص للوقت النسبي
+function formatRelative(date) {
+  const now = new Date();
+  const diff = date - now;
+  const absDiff = Math.abs(diff);
+  
+  const minutes = Math.floor(absDiff / 60000);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  
+  let str;
+  if (minutes < 1) str = 'الآن';
+  else if (minutes < 60) str = `${minutes} دقيقة`;
+  else if (hours < 24) str = `${hours} ساعة و${minutes % 60} دقيقة`;
+  else str = `${days} يوم${hours % 24 ? ' و' + (hours % 24) + ' ساعة' : ''}`;
+  
+  return diff > 0 ? `يبدأ بعد ${str}` : `قبل ${str}`;
+}
+
+function formatDuration(ms) {
+  const minutes = Math.floor(ms / 60000);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  
+  if (minutes < 60) return `${minutes} دقيقة`;
+  if (hours < 24) return `${hours} ساعة و${minutes % 60} دقيقة`;
+  return `${days} يوم${hours % 24 ? ' و' + (hours % 24) + ' ساعة' : ''}`;
+}
+
+// Add listeners for date inputs
+document.getElementById('scheduleStart').addEventListener('input', updateTimeHints);
+document.getElementById('scheduleEnd').addEventListener('input', updateTimeHints);
 
 function closeScheduleModal() {
   document.getElementById('scheduleModal').classList.remove('show');
@@ -1889,8 +2012,40 @@ function renderOverview() {
 }
 
 // ============================================
+// HEADER CLOCK
+// ============================================
+function startHeaderClock() {
+  const updateClock = () => {
+    const now = new Date();
+    
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    const timeStr = `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
+    
+    const days = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+    const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 
+                    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+    const dateStr = `${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    
+    document.getElementById('hdrClockTime').textContent = timeStr;
+    document.getElementById('hdrClockDate').textContent = dateStr;
+    
+    // Show timezone
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const tzShort = tz.split('/').pop().replace(/_/g, ' ');
+    document.getElementById('hdrTimezone').textContent = tzShort;
+  };
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
+// ============================================
 // INIT
 // ============================================
+startHeaderClock();
 loadState();
 setInterval(loadState, 30000);
 </script>

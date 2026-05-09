@@ -464,6 +464,11 @@
   }
   .modal-overlay.show { display: flex; }
   
+  /* Higher z-index for media picker when opened from schedule modal */
+  #addMediaModal {
+    z-index: 1100;
+  }
+  
   .modal {
     background: var(--surface);
     border: 1px solid var(--border);

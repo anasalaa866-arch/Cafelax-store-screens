@@ -51,7 +51,6 @@
     letter-spacing: 3px;
     text-transform: uppercase;
   }
-  .header-actions { display: flex; gap: 12px; align-items: center; }
   
   .container { max-width: 1400px; margin: 0 auto; padding: 40px; }
   
@@ -60,6 +59,7 @@
     gap: 4px;
     margin-bottom: 32px;
     border-bottom: 1px solid var(--border);
+    overflow-x: auto;
   }
   .tab {
     padding: 14px 24px;
@@ -73,6 +73,7 @@
     border-bottom: 2px solid transparent;
     transition: all 0.2s;
     font-family: inherit;
+    white-space: nowrap;
   }
   .tab:hover { color: var(--text); }
   .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
@@ -112,9 +113,7 @@
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 24px;
-    transition: border 0.2s;
   }
-  .group-card:hover { border-color: var(--gold); }
   .group-header {
     display: flex;
     align-items: center;
@@ -340,30 +339,166 @@
     font-size: 12px;
   }
   
-  .save-indicator {
-    position: fixed;
-    top: 90px;
-    right: 40px;
-    padding: 8px 16px;
-    background: var(--surface);
+  /* Schedule cards */
+  .schedule-card {
+    background: var(--surface-2);
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: center;
+  }
+  .schedule-card.active-now {
+    border-color: #4ade80;
+    background: rgba(74, 222, 128, 0.05);
+  }
+  .schedule-card.upcoming {
+    border-color: var(--gold);
+  }
+  .schedule-info h4 {
+    color: var(--gold);
+    margin-bottom: 6px;
+    font-size: 16px;
+  }
+  .schedule-meta {
     font-size: 12px;
     color: var(--muted);
+    line-height: 1.6;
+  }
+  .schedule-meta strong { color: var(--text); }
+  .schedule-status {
+    display: inline-block;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .schedule-status.active { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
+  .schedule-status.scheduled { background: rgba(212, 175, 55, 0.2); color: var(--gold); }
+  .schedule-status.expired { background: rgba(248, 113, 113, 0.2); color: #f87171; }
+  .schedule-status.disabled { background: rgba(136, 136, 136, 0.2); color: var(--muted); }
+  
+  .schedule-actions {
+    display: flex;
+    gap: 6px;
+  }
+  
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(10px);
     display: none;
     align-items: center;
-    gap: 8px;
-    z-index: 50;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
   }
-  .save-indicator.show { display: flex; }
-  .save-indicator .spinner {
-    width: 12px; height: 12px;
-    border: 2px solid var(--gold);
-    border-top-color: transparent;
+  .modal-overlay.show { display: flex; }
+  
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal h2 {
+    color: var(--gold);
+    margin-bottom: 8px;
+    font-size: 22px;
+  }
+  .modal-subtitle {
+    color: var(--muted);
+    margin-bottom: 24px;
+    font-size: 13px;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .form-field label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .form-field input {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.15s;
+  }
+  .form-field input:focus { border-color: var(--gold); }
+  
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  
+  .schedule-playlist-mini {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 16px;
+  }
+  
+  /* Toggle switch */
+  .switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .switch.on { background: rgba(212, 175, 55, 0.3); border-color: var(--gold); }
+  .switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: var(--muted);
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    transition: all 0.2s;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .switch.on::after {
+    left: 22px;
+    background: var(--gold);
+  }
 </style>
 </head>
 <body>
@@ -373,15 +508,10 @@
     <span class="logo-text">CAFELAX</span>
     <span class="logo-sub">Signage Control</span>
   </div>
-  <div class="header-actions">
+  <div>
     <button class="btn btn-sm" onclick="loadState()">↻ Refresh</button>
   </div>
 </header>
-
-<div class="save-indicator" id="saveIndicator">
-  <div class="spinner"></div>
-  <span>Saving...</span>
-</div>
 
 <div class="container">
   
@@ -390,14 +520,15 @@
       <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
     </svg>
     <div>
-      <h3>How to setup a new screen</h3>
-      <p>افتح <code id="displayUrl"></code> على الشاشة، اكتب اسم المجموعة (مثل: <code>group-a</code>), الشاشة هتنضم تلقائياً لقائمة العرض.</p>
+      <h3>إعداد الشاشات</h3>
+      <p>افتح <code id="displayUrl"></code> على الشاشة، ثم اكتب اسم المجموعة. لفتح الإعدادات لاحقاً: اضغط OK 5 مرات بسرعة، أو زرار Menu، أو F1 للـ PIN code.</p>
     </div>
   </div>
   
   <div class="tabs">
     <button class="tab active" data-tab="overview">Overview</button>
-    <button class="tab" data-tab="playlists">Playlists</button>
+    <button class="tab" data-tab="playlists">Default Playlists</button>
+    <button class="tab" data-tab="schedules">📅 Scheduled Campaigns</button>
     <button class="tab" data-tab="screens">Screens</button>
   </div>
   
@@ -416,11 +547,11 @@
       <div class="stat">
         <div class="stat-label">Total Media</div>
         <div class="stat-value" id="stat-media">0</div>
-        <div class="stat-sub">صور وفيديوهات</div>
       </div>
       <div class="stat">
-        <div class="stat-label">Status</div>
-        <div class="stat-value" style="font-size:18px;color:#4ade80;">● ONLINE</div>
+        <div class="stat-label">Active Campaigns</div>
+        <div class="stat-value" id="stat-campaigns" style="color:#4ade80;">0</div>
+        <div class="stat-sub">شغالة دلوقتي</div>
       </div>
     </div>
     
@@ -430,11 +561,14 @@
     </div>
   </div>
   
-  <!-- PLAYLISTS -->
+  <!-- PLAYLISTS (Default) -->
   <div class="panel" id="panel-playlists">
     <div class="playlist-section">
       <div class="playlist-header">
-        <div class="playlist-title">Manage Playlist</div>
+        <div>
+          <div class="playlist-title">Default Playlist</div>
+          <div style="color:var(--muted);font-size:12px;margin-top:4px;">القائمة الأساسية اللي بتشتغل لما مفيش حملة مؤقتة</div>
+        </div>
         <div style="display:flex;gap:12px;align-items:center;">
           <select class="group-selector" id="groupSelector" onchange="loadPlaylist()"></select>
           <button class="btn btn-sm" onclick="addNewGroup()">+ New Group</button>
@@ -457,7 +591,26 @@
       
       <div style="display:flex;gap:12px;margin-top:24px;">
         <button class="btn btn-primary" onclick="savePlaylist()">SAVE & DEPLOY</button>
-        <button class="btn" onclick="previewPlaylist()">Preview</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- SCHEDULED CAMPAIGNS -->
+  <div class="panel" id="panel-schedules">
+    <div class="playlist-section">
+      <div class="playlist-header">
+        <div>
+          <div class="playlist-title">📅 Scheduled Campaigns</div>
+          <div style="color:var(--muted);font-size:12px;margin-top:4px;">حملات مؤقتة بتشتغل في أوقات محددة وترجع للقائمة الأساسية تلقائياً</div>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <select class="group-selector" id="scheduleGroupSelector" onchange="loadSchedules()"></select>
+          <button class="btn btn-primary" onclick="openScheduleModal()">+ New Campaign</button>
+        </div>
+      </div>
+      
+      <div id="schedulesList">
+        <div class="empty-state">اختار مجموعة لعرض الحملات المجدولة</div>
       </div>
     </div>
   </div>
@@ -469,33 +622,71 @@
   
 </div>
 
+<!-- Schedule Modal -->
+<div class="modal-overlay" id="scheduleModal">
+  <div class="modal">
+    <h2 id="modalTitle">حملة مؤقتة جديدة</h2>
+    <div class="modal-subtitle">حدد فترة الحملة والمحتوى الخاص بيها</div>
+    
+    <div class="form-field" style="margin-bottom:16px;">
+      <label>اسم الحملة</label>
+      <input type="text" id="scheduleName" placeholder="مثال: عرض رمضان">
+    </div>
+    
+    <div class="form-row">
+      <div class="form-field">
+        <label>من تاريخ ووقت</label>
+        <input type="datetime-local" id="scheduleStart">
+      </div>
+      <div class="form-field">
+        <label>إلى تاريخ ووقت</label>
+        <input type="datetime-local" id="scheduleEnd">
+      </div>
+    </div>
+    
+    <div style="margin-top:24px;">
+      <label style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">محتوى الحملة</label>
+      
+      <div class="upload-zone" id="scheduleUploadZone" onclick="document.getElementById('scheduleFileInput').click()" style="margin-top:8px;padding:30px;">
+        <div class="upload-zone-text" style="font-size:14px;">اضغط لرفع صور أو فيديوهات الحملة</div>
+        <input type="file" id="scheduleFileInput" multiple accept="image/*,video/*" hidden>
+        <div class="upload-progress" id="scheduleUploadProgress" style="width:0;"></div>
+      </div>
+      
+      <div class="schedule-playlist-mini" id="schedulePlaylistMini">
+        <div class="empty-state" style="padding:20px;font-size:13px;">لا توجد ملفات بعد</div>
+      </div>
+    </div>
+    
+    <div class="modal-actions">
+      <button class="btn" onclick="closeScheduleModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSchedule()">Save Campaign</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 // ============================================
-// CAFELAX CONTROL PANEL — Real API
+// CAFELAX CONTROL PANEL with Schedules
 // ============================================
 
 const API = window.location.origin + '/api/admin';
 let state = { groups: {}, screens: {} };
-let currentPlaylist = []; // working copy للـ playlist الحالي
+let currentPlaylist = [];
+let currentSchedulePlaylist = [];
+let editingScheduleId = null;
 let dirty = false;
 
 document.getElementById('displayUrl').textContent = window.location.origin + '/display.html';
 
-// ============================================
-// HELPERS
-// ============================================
 function toast(msg, isError) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.toggle('error', !!isError);
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
-}
-
-function showSaving(show) {
-  document.getElementById('saveIndicator').classList.toggle('show', show);
 }
 
 async function api(path, opts = {}) {
@@ -511,20 +702,22 @@ async function api(path, opts = {}) {
   return res.json();
 }
 
-// ============================================
-// TABS
-// ============================================
+// Tabs
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     tab.classList.add('active');
     document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    
+    if (tab.dataset.tab === 'schedules') {
+      loadSchedules();
+    }
   });
 });
 
 // ============================================
-// LOAD STATE FROM SERVER
+// LOAD STATE
 // ============================================
 async function loadState() {
   try {
@@ -539,10 +732,9 @@ async function loadState() {
 // GROUPS
 // ============================================
 async function addNewGroup() {
-  const name = prompt('اسم المجموعة الجديدة (إنجليزي بدون مسافات):');
+  const name = prompt('اسم المجموعة الجديدة:');
   if (!name) return;
   
-  showSaving(true);
   try {
     const result = await api('/groups', {
       method: 'POST',
@@ -551,36 +743,39 @@ async function addNewGroup() {
     await loadState();
     document.getElementById('groupSelector').value = result.name;
     loadPlaylist();
-    toast('✓ تم إنشاء المجموعة: ' + result.name);
+    toast('✓ تم إنشاء: ' + result.name);
   } catch (err) {
     toast('فشل: ' + err.message, true);
   }
-  showSaving(false);
 }
 
-function renderGroupSelector() {
-  const sel = document.getElementById('groupSelector');
-  const current = sel.value;
-  sel.innerHTML = '';
-  
-  const groupNames = Object.keys(state.groups);
-  if (!groupNames.length) {
-    sel.innerHTML = '<option>لا توجد مجموعات</option>';
-    return;
-  }
-  
-  groupNames.forEach(g => {
-    const opt = document.createElement('option');
-    opt.value = g;
-    opt.textContent = g;
-    sel.appendChild(opt);
+function renderGroupSelectors() {
+  const selectors = ['groupSelector', 'scheduleGroupSelector'];
+  selectors.forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const current = sel.value;
+    sel.innerHTML = '';
+    
+    const groupNames = Object.keys(state.groups);
+    if (!groupNames.length) {
+      sel.innerHTML = '<option>لا توجد مجموعات</option>';
+      return;
+    }
+    
+    groupNames.forEach(g => {
+      const opt = document.createElement('option');
+      opt.value = g;
+      opt.textContent = g;
+      sel.appendChild(opt);
+    });
+    
+    if (current && state.groups[current]) sel.value = current;
   });
-  
-  if (current && state.groups[current]) sel.value = current;
 }
 
 // ============================================
-// PLAYLIST
+// DEFAULT PLAYLIST
 // ============================================
 function loadPlaylist() {
   const groupName = document.getElementById('groupSelector').value;
@@ -597,70 +792,69 @@ function renderPlaylist() {
   container.innerHTML = '';
   
   if (!currentPlaylist.length) {
-    container.innerHTML = '<div class="empty-state">لا توجد عناصر بعد. ارفع صور أو فيديوهات لتبدأ.</div>';
+    container.innerHTML = '<div class="empty-state">لا توجد عناصر بعد</div>';
     return;
   }
   
   currentPlaylist.forEach((item, idx) => {
-    const div = document.createElement('div');
-    div.className = 'playlist-item';
-    
-    const thumbStyle = item.type === 'image' 
-      ? `background-image:url('${item.url}');background-size:cover;background-position:center;`
-      : '';
-    
-    const videoHtml = item.type === 'video' 
-      ? `<video src="${item.url}" muted preload="metadata"></video>` 
-      : '';
-    
-    div.innerHTML = `
-      <div class="item-thumb" style="${thumbStyle}">${videoHtml}</div>
-      <div class="item-info">
-        <div class="item-name">${item.name || 'Untitled'}</div>
-        <div class="item-meta">${item.type.toUpperCase()} · ${formatSize(item.size)}</div>
-      </div>
-      <input type="number" class="duration-input" value="${item.duration / 1000}" min="1" max="120" 
-        data-idx="${idx}" title="Seconds">
-      <div class="item-actions">
-        <button class="icon-btn" data-action="up" data-idx="${idx}" title="Up">▲</button>
-        <button class="icon-btn" data-action="down" data-idx="${idx}" title="Down">▼</button>
-        <button class="icon-btn danger" data-action="remove" data-idx="${idx}" title="Delete">✕</button>
-      </div>
-    `;
-    
+    const div = createPlaylistItemElement(item, idx, currentPlaylist, () => {
+      dirty = true;
+      renderPlaylist();
+    });
     container.appendChild(div);
   });
+}
+
+function createPlaylistItemElement(item, idx, list, onChange) {
+  const div = document.createElement('div');
+  div.className = 'playlist-item';
   
-  // Bind events
-  container.querySelectorAll('.duration-input').forEach(input => {
-    input.addEventListener('change', (e) => {
-      const idx = +e.target.dataset.idx;
-      currentPlaylist[idx].duration = Math.max(1, parseInt(e.target.value)) * 1000;
-      dirty = true;
-    });
+  const thumbStyle = item.type === 'image' 
+    ? `background-image:url('${item.url}');background-size:cover;background-position:center;`
+    : '';
+  
+  const videoHtml = item.type === 'video' 
+    ? `<video src="${item.url}" muted preload="metadata"></video>` 
+    : '';
+  
+  div.innerHTML = `
+    <div class="item-thumb" style="${thumbStyle}">${videoHtml}</div>
+    <div class="item-info">
+      <div class="item-name">${item.name || 'Untitled'}</div>
+      <div class="item-meta">${item.type.toUpperCase()} · ${formatSize(item.size)}</div>
+    </div>
+    <input type="number" class="duration-input" value="${item.duration / 1000}" min="1" max="120" title="Seconds">
+    <div class="item-actions">
+      <button class="icon-btn" data-action="up">▲</button>
+      <button class="icon-btn" data-action="down">▼</button>
+      <button class="icon-btn danger" data-action="remove">✕</button>
+    </div>
+  `;
+  
+  div.querySelector('.duration-input').addEventListener('change', (e) => {
+    list[idx].duration = Math.max(1, parseInt(e.target.value)) * 1000;
+    onChange();
   });
   
-  container.querySelectorAll('.icon-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const idx = +e.currentTarget.dataset.idx;
-      const action = e.currentTarget.dataset.action;
+  div.querySelectorAll('.icon-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
       if (action === 'up' && idx > 0) {
-        [currentPlaylist[idx], currentPlaylist[idx-1]] = [currentPlaylist[idx-1], currentPlaylist[idx]];
-        dirty = true;
-        renderPlaylist();
-      } else if (action === 'down' && idx < currentPlaylist.length - 1) {
-        [currentPlaylist[idx], currentPlaylist[idx+1]] = [currentPlaylist[idx+1], currentPlaylist[idx]];
-        dirty = true;
-        renderPlaylist();
+        [list[idx], list[idx-1]] = [list[idx-1], list[idx]];
+        onChange();
+      } else if (action === 'down' && idx < list.length - 1) {
+        [list[idx], list[idx+1]] = [list[idx+1], list[idx]];
+        onChange();
       } else if (action === 'remove') {
         if (confirm('حذف العنصر؟')) {
-          currentPlaylist.splice(idx, 1);
-          dirty = true;
-          renderPlaylist();
+          list.splice(idx, 1);
+          onChange();
         }
       }
     });
   });
+  
+  return div;
 }
 
 function formatSize(bytes) {
@@ -669,9 +863,30 @@ function formatSize(bytes) {
   return (bytes / 1024 / 1024).toFixed(1) + ' MB';
 }
 
-// ============================================
-// FILE UPLOAD (REAL API)
-// ============================================
+// File upload handling (shared)
+async function uploadFiles(files, progressEl) {
+  const formData = new FormData();
+  for (const file of files) formData.append('files', file);
+  
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.upload.addEventListener('progress', (e) => {
+      if (e.lengthComputable && progressEl) {
+        progressEl.style.width = (e.loaded / e.total * 100) + '%';
+      }
+    });
+    xhr.addEventListener('load', () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(JSON.parse(xhr.responseText));
+      } else reject(new Error('Upload failed'));
+    });
+    xhr.addEventListener('error', () => reject(new Error('Network error')));
+    xhr.open('POST', API + '/upload');
+    xhr.send(formData);
+  });
+}
+
+// Default playlist upload
 const uploadZone = document.getElementById('uploadZone');
 const fileInput = document.getElementById('fileInput');
 const uploadProgress = document.getElementById('uploadProgress');
@@ -684,54 +899,28 @@ uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag
 uploadZone.addEventListener('drop', (e) => {
   e.preventDefault();
   uploadZone.classList.remove('dragover');
-  handleFiles(e.dataTransfer.files);
+  handleDefaultFiles(e.dataTransfer.files);
 });
-fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+fileInput.addEventListener('change', (e) => handleDefaultFiles(e.target.files));
 
-async function handleFiles(files) {
+async function handleDefaultFiles(files) {
   if (!files.length) return;
   if (!Object.keys(state.groups).length) {
     toast('أنشئ مجموعة أولاً', true);
     return;
   }
   
-  const formData = new FormData();
-  for (const file of files) {
-    formData.append('files', file);
-  }
-  
   uploadProgress.style.width = '0%';
   uploadZone.style.pointerEvents = 'none';
   
   try {
-    const xhr = new XMLHttpRequest();
-    
-    const result = await new Promise((resolve, reject) => {
-      xhr.upload.addEventListener('progress', (e) => {
-        if (e.lengthComputable) {
-          uploadProgress.style.width = (e.loaded / e.total * 100) + '%';
-        }
-      });
-      xhr.addEventListener('load', () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          resolve(JSON.parse(xhr.responseText));
-        } else {
-          reject(new Error('Upload failed'));
-        }
-      });
-      xhr.addEventListener('error', () => reject(new Error('Network error')));
-      xhr.open('POST', API + '/upload');
-      xhr.send(formData);
-    });
-    
-    // أضف الملفات للـ playlist الحالي
+    const result = await uploadFiles(files, uploadProgress);
     currentPlaylist.push(...result.files);
     dirty = true;
     renderPlaylist();
-    
-    toast(`✓ تم رفع ${files.length} ملف — اضغط SAVE للنشر`);
+    toast(`✓ تم رفع ${files.length} ملف`);
   } catch (err) {
-    toast('فشل الرفع: ' + err.message, true);
+    toast('فشل: ' + err.message, true);
   } finally {
     uploadProgress.style.width = '0%';
     uploadZone.style.pointerEvents = 'auto';
@@ -739,14 +928,10 @@ async function handleFiles(files) {
   }
 }
 
-// ============================================
-// SAVE PLAYLIST
-// ============================================
 async function savePlaylist() {
   const groupName = document.getElementById('groupSelector').value;
-  if (!groupName) { toast('اختر مجموعة أولاً', true); return; }
+  if (!groupName) { toast('اختر مجموعة', true); return; }
   
-  showSaving(true);
   try {
     await api(`/groups/${encodeURIComponent(groupName)}/playlist`, {
       method: 'PUT',
@@ -754,17 +939,257 @@ async function savePlaylist() {
     });
     dirty = false;
     await loadState();
-    toast('✓ تم النشر — الشاشات هتتحدث خلال 30 ثانية');
+    toast('✓ تم النشر');
   } catch (err) {
-    toast('فشل الحفظ: ' + err.message, true);
+    toast('فشل: ' + err.message, true);
   }
-  showSaving(false);
 }
 
-function previewPlaylist() {
-  const groupName = document.getElementById('groupSelector').value;
-  if (!groupName) return;
-  window.open(`/display.html?preview=${encodeURIComponent(groupName)}`, '_blank', 'width=400,height=700');
+// ============================================
+// SCHEDULES
+// ============================================
+function loadSchedules() {
+  const groupName = document.getElementById('scheduleGroupSelector').value;
+  const group = state.groups[groupName];
+  const container = document.getElementById('schedulesList');
+  
+  if (!group) {
+    container.innerHTML = '<div class="empty-state">اختار مجموعة</div>';
+    return;
+  }
+  
+  const schedules = group.schedules || [];
+  if (!schedules.length) {
+    container.innerHTML = '<div class="empty-state">لا توجد حملات مجدولة. اضغط + New Campaign لإضافة واحدة</div>';
+    return;
+  }
+  
+  // ترتيب: النشط دلوقتي، ثم القادم، ثم المنتهي
+  const now = Date.now();
+  const sorted = [...schedules].sort((a, b) => {
+    const aStart = new Date(a.startDate).getTime();
+    const aEnd = new Date(a.endDate).getTime();
+    const bStart = new Date(b.startDate).getTime();
+    const bEnd = new Date(b.endDate).getTime();
+    
+    const aActive = a.active && now >= aStart && now <= aEnd;
+    const bActive = b.active && now >= bStart && now <= bEnd;
+    if (aActive !== bActive) return bActive - aActive;
+    
+    return aStart - bStart;
+  });
+  
+  container.innerHTML = '';
+  sorted.forEach(schedule => {
+    const card = renderScheduleCard(schedule, groupName);
+    container.appendChild(card);
+  });
+}
+
+function renderScheduleCard(schedule, groupName) {
+  const now = Date.now();
+  const start = new Date(schedule.startDate).getTime();
+  const end = new Date(schedule.endDate).getTime();
+  
+  let status, statusClass, cardClass = '';
+  if (!schedule.active) {
+    status = 'معطّلة';
+    statusClass = 'disabled';
+  } else if (now < start) {
+    status = 'مجدولة';
+    statusClass = 'scheduled';
+    cardClass = 'upcoming';
+  } else if (now > end) {
+    status = 'انتهت';
+    statusClass = 'expired';
+  } else {
+    status = '● شغالة دلوقتي';
+    statusClass = 'active';
+    cardClass = 'active-now';
+  }
+  
+  const card = document.createElement('div');
+  card.className = 'schedule-card ' + cardClass;
+  
+  card.innerHTML = `
+    <div class="schedule-info">
+      <h4>${schedule.name}</h4>
+      <div class="schedule-meta">
+        <strong>من:</strong> ${formatDate(schedule.startDate)}<br>
+        <strong>إلى:</strong> ${formatDate(schedule.endDate)}<br>
+        <strong>المحتوى:</strong> ${schedule.playlist.length} عنصر
+      </div>
+      <div class="schedule-status ${statusClass}">${status}</div>
+    </div>
+    <div class="schedule-actions">
+      <div class="switch ${schedule.active ? 'on' : ''}" data-toggle></div>
+      <button class="icon-btn" data-edit>✎</button>
+      <button class="icon-btn danger" data-delete>✕</button>
+    </div>
+  `;
+  
+  card.querySelector('[data-toggle]').addEventListener('click', async () => {
+    try {
+      await api(`/groups/${encodeURIComponent(groupName)}/schedules/${schedule.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ active: !schedule.active })
+      });
+      await loadState();
+      loadSchedules();
+    } catch (err) {
+      toast('فشل: ' + err.message, true);
+    }
+  });
+  
+  card.querySelector('[data-edit]').addEventListener('click', () => {
+    openScheduleModal(schedule);
+  });
+  
+  card.querySelector('[data-delete]').addEventListener('click', async () => {
+    if (!confirm(`حذف الحملة "${schedule.name}"؟`)) return;
+    try {
+      await api(`/groups/${encodeURIComponent(groupName)}/schedules/${schedule.id}`, {
+        method: 'DELETE'
+      });
+      await loadState();
+      loadSchedules();
+      toast('✓ تم الحذف');
+    } catch (err) {
+      toast('فشل: ' + err.message, true);
+    }
+  });
+  
+  return card;
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleString('ar-EG', {
+    dateStyle: 'medium',
+    timeStyle: 'short'
+  });
+}
+
+// ============================================
+// SCHEDULE MODAL
+// ============================================
+function openScheduleModal(schedule) {
+  editingScheduleId = schedule ? schedule.id : null;
+  
+  document.getElementById('modalTitle').textContent = schedule ? 'تعديل الحملة' : 'حملة مؤقتة جديدة';
+  document.getElementById('scheduleName').value = schedule ? schedule.name : '';
+  
+  if (schedule) {
+    document.getElementById('scheduleStart').value = toLocalDateTime(schedule.startDate);
+    document.getElementById('scheduleEnd').value = toLocalDateTime(schedule.endDate);
+    currentSchedulePlaylist = JSON.parse(JSON.stringify(schedule.playlist));
+  } else {
+    // Default: من الآن إلى أسبوع
+    const now = new Date();
+    const weekLater = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    document.getElementById('scheduleStart').value = toLocalDateTime(now);
+    document.getElementById('scheduleEnd').value = toLocalDateTime(weekLater);
+    currentSchedulePlaylist = [];
+  }
+  
+  renderScheduleModalPlaylist();
+  document.getElementById('scheduleModal').classList.add('show');
+}
+
+function closeScheduleModal() {
+  document.getElementById('scheduleModal').classList.remove('show');
+  editingScheduleId = null;
+  currentSchedulePlaylist = [];
+}
+
+function toLocalDateTime(date) {
+  const d = new Date(date);
+  const tzOffset = d.getTimezoneOffset() * 60000;
+  return new Date(d.getTime() - tzOffset).toISOString().slice(0, 16);
+}
+
+function renderScheduleModalPlaylist() {
+  const container = document.getElementById('schedulePlaylistMini');
+  container.innerHTML = '';
+  
+  if (!currentSchedulePlaylist.length) {
+    container.innerHTML = '<div class="empty-state" style="padding:20px;font-size:13px;">لا توجد ملفات بعد</div>';
+    return;
+  }
+  
+  currentSchedulePlaylist.forEach((item, idx) => {
+    const div = createPlaylistItemElement(item, idx, currentSchedulePlaylist, () => {
+      renderScheduleModalPlaylist();
+    });
+    container.appendChild(div);
+  });
+}
+
+// Schedule file upload
+const scheduleUploadZone = document.getElementById('scheduleUploadZone');
+const scheduleFileInput = document.getElementById('scheduleFileInput');
+const scheduleUploadProgress = document.getElementById('scheduleUploadProgress');
+
+scheduleFileInput.addEventListener('change', (e) => handleScheduleFiles(e.target.files));
+
+async function handleScheduleFiles(files) {
+  if (!files.length) return;
+  
+  scheduleUploadProgress.style.width = '0%';
+  scheduleUploadZone.style.pointerEvents = 'none';
+  
+  try {
+    const result = await uploadFiles(files, scheduleUploadProgress);
+    currentSchedulePlaylist.push(...result.files);
+    renderScheduleModalPlaylist();
+    toast(`✓ تم رفع ${files.length} ملف`);
+  } catch (err) {
+    toast('فشل: ' + err.message, true);
+  } finally {
+    scheduleUploadProgress.style.width = '0%';
+    scheduleUploadZone.style.pointerEvents = 'auto';
+    scheduleFileInput.value = '';
+  }
+}
+
+async function saveSchedule() {
+  const groupName = document.getElementById('scheduleGroupSelector').value;
+  const name = document.getElementById('scheduleName').value.trim();
+  const startDate = document.getElementById('scheduleStart').value;
+  const endDate = document.getElementById('scheduleEnd').value;
+  
+  if (!name) { toast('اكتب اسم الحملة', true); return; }
+  if (!startDate || !endDate) { toast('حدد التواريخ', true); return; }
+  if (new Date(endDate) <= new Date(startDate)) {
+    toast('وقت النهاية لازم يكون بعد وقت البداية', true);
+    return;
+  }
+  if (!currentSchedulePlaylist.length) {
+    toast('ارفع محتوى الحملة', true);
+    return;
+  }
+  
+  const payload = {
+    id: editingScheduleId,
+    name,
+    playlist: currentSchedulePlaylist,
+    startDate: new Date(startDate).toISOString(),
+    endDate: new Date(endDate).toISOString(),
+    active: true
+  };
+  
+  try {
+    await api(`/groups/${encodeURIComponent(groupName)}/schedules`, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    await loadState();
+    loadSchedules();
+    closeScheduleModal();
+    toast('✓ تم الحفظ');
+  } catch (err) {
+    toast('فشل: ' + err.message, true);
+  }
 }
 
 // ============================================
@@ -778,27 +1203,53 @@ function renderOverview() {
     state.screens[s].lastSeen && (Date.now() - state.screens[s].lastSeen < 5 * 60 * 1000)
   );
   
+  // Active campaigns count
+  const now = Date.now();
+  let activeCampaigns = 0;
+  Object.values(state.groups).forEach(g => {
+    if (g.schedules) {
+      g.schedules.forEach(s => {
+        const start = new Date(s.startDate).getTime();
+        const end = new Date(s.endDate).getTime();
+        if (s.active && now >= start && now <= end) activeCampaigns++;
+      });
+    }
+  });
+  
   document.getElementById('stat-groups').textContent = totalGroups;
   document.getElementById('stat-media').textContent = totalMedia;
   document.getElementById('stat-screens').textContent = activeScreens.length;
   document.getElementById('stat-screens-sub').textContent = `من إجمالي ${screens.length}`;
+  document.getElementById('stat-campaigns').textContent = activeCampaigns;
   
   const grid = document.getElementById('groups-grid');
   if (!totalGroups) {
-    grid.innerHTML = '<div class="empty-state">لا توجد مجموعات بعد. روح لـ Playlists وأنشئ واحدة.</div>';
+    grid.innerHTML = '<div class="empty-state">لا توجد مجموعات بعد</div>';
     return;
   }
   
   grid.innerHTML = '';
   Object.entries(state.groups).forEach(([groupName, group]) => {
     const groupScreens = screens.filter(s => state.screens[s].group === groupName);
+    const activeSchedule = (group.schedules || []).find(s => {
+      const start = new Date(s.startDate).getTime();
+      const end = new Date(s.endDate).getTime();
+      return s.active && now >= start && now <= end;
+    });
+    
     const card = document.createElement('div');
     card.className = 'group-card';
+    
+    const scheduleHtml = activeSchedule 
+      ? `<div style="background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);padding:8px 12px;border-radius:8px;font-size:12px;color:#4ade80;margin-bottom:12px;">📅 الآن: ${activeSchedule.name}</div>` 
+      : '';
+    
     card.innerHTML = `
       <div class="group-header">
         <div class="group-name">${groupName}</div>
-        <div class="group-count">${(group.playlist || []).length} items</div>
+        <div class="group-count">${(group.playlist || []).length} default · ${(group.schedules || []).length} campaigns</div>
       </div>
+      ${scheduleHtml}
       <div class="group-screens">
         ${groupScreens.length 
           ? groupScreens.map(s => {
@@ -810,26 +1261,20 @@ function renderOverview() {
           : '<div style="font-size:12px;color:var(--muted);">لا توجد شاشات متصلة</div>'
         }
       </div>
-      <button class="btn btn-sm" data-group="${groupName}">Edit Playlist →</button>
     `;
-    card.querySelector('button').addEventListener('click', () => {
-      document.querySelector('[data-tab="playlists"]').click();
-      document.getElementById('groupSelector').value = groupName;
-      loadPlaylist();
-    });
     grid.appendChild(card);
   });
 }
 
 // ============================================
-// SCREENS LIST
+// SCREENS
 // ============================================
 function renderScreens() {
   const container = document.getElementById('screensList');
   const screens = Object.entries(state.screens);
   
   if (!screens.length) {
-    container.innerHTML = '<div class="empty-state">لا توجد شاشات متصلة بعد.</div>';
+    container.innerHTML = '<div class="empty-state">لا توجد شاشات متصلة</div>';
     return;
   }
   
@@ -841,12 +1286,12 @@ function renderScreens() {
         const lastSeenMins = Math.floor((Date.now() - screen.lastSeen) / 60000);
         return `
           <div class="playlist-item" style="grid-template-columns:auto 1fr auto;">
-            <div class="dot" style="width:10px;height:10px;border-radius:50%;background:${isOnline ? '#4ade80' : '#666'};"></div>
+            <div style="width:10px;height:10px;border-radius:50%;background:${isOnline ? '#4ade80' : '#666'};"></div>
             <div class="item-info">
               <div class="item-name">${id}</div>
               <div class="item-meta">Group: ${screen.group} · IP: ${screen.ip || '—'}</div>
             </div>
-            <div class="item-meta">${isOnline ? 'Online' : `Offline ${lastSeenMins}m ago`}</div>
+            <div class="item-meta">${isOnline ? 'Online' : `Offline ${lastSeenMins}m`}</div>
           </div>
         `;
       }).join('')}
@@ -858,23 +1303,27 @@ function renderScreens() {
 // INIT
 // ============================================
 function renderAll() {
-  renderGroupSelector();
+  renderGroupSelectors();
   if (Object.keys(state.groups).length && !document.getElementById('groupSelector').value) {
     document.getElementById('groupSelector').value = Object.keys(state.groups)[0];
   }
   loadPlaylist();
   renderOverview();
   renderScreens();
+  
+  // Update schedules if on that tab
+  const schedulesTab = document.querySelector('[data-tab="schedules"]');
+  if (schedulesTab && schedulesTab.classList.contains('active')) {
+    loadSchedules();
+  }
 }
 
 loadState();
 
-// Auto-refresh every 30 seconds
 setInterval(() => {
   if (!dirty) loadState();
 }, 30000);
 
-// Warn before leaving with unsaved changes
 window.addEventListener('beforeunload', (e) => {
   if (dirty) {
     e.preventDefault();

@@ -90,7 +90,22 @@
   .slide.fit-fill video, .slide.fit-fill img { object-fit: fill; }
   
   /* ============================================
-     SETTINGS UI - TV REMOTE OPTIMIZED
+     INVISIBLE EXIT TRIGGER (Top corners)
+     ============================================ */
+  .exit-zone {
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    z-index: 50;
+    cursor: pointer;
+  }
+  .exit-zone-tl { top: 0; left: 0; }
+  .exit-zone-tr { top: 0; right: 0; }
+  .exit-zone-bl { bottom: 0; left: 0; }
+  .exit-zone-br { bottom: 0; right: 0; }
+  
+  /* ============================================
+     SETTINGS UI
      ============================================ */
   #setup {
     position: fixed;
@@ -101,6 +116,7 @@
     justify-content: center;
     z-index: 1000;
     padding: 5vh 5vw;
+    overflow-y: auto;
   }
   #setup.hidden { display: none; }
   
@@ -128,9 +144,7 @@
     text-align: center;
   }
   
-  .field {
-    margin-bottom: 3vh;
-  }
+  .field { margin-bottom: 3vh; }
   .field-label {
     display: block;
     color: #aaa;
@@ -140,12 +154,7 @@
     letter-spacing: 2px;
   }
   
-  /* Selectable items (focusable for remote) */
-  .options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
+  .options { display: flex; flex-wrap: wrap; gap: 10px; }
   .option {
     flex: 1;
     min-width: 120px;
@@ -173,7 +182,6 @@
     box-shadow: 0 0 0 3px rgba(212,175,55,0.3);
   }
   
-  /* Group input - on-screen keyboard */
   .group-display {
     width: 100%;
     padding: 24px;
@@ -217,7 +225,6 @@
     box-shadow: 0 0 0 4px rgba(212,175,55,0.5);
   }
   
-  /* Help text at bottom */
   .help-text {
     text-align: center;
     margin-top: 3vh;
@@ -236,7 +243,7 @@
   }
   
   /* ============================================
-     ON-SCREEN KEYBOARD (for remote input)
+     ON-SCREEN KEYBOARD
      ============================================ */
   #keyboard {
     position: fixed;
@@ -250,10 +257,7 @@
   }
   #keyboard.show { display: flex; }
   
-  .kb-box {
-    width: 100%;
-    max-width: 900px;
-  }
+  .kb-box { width: 100%; max-width: 900px; }
   .kb-display {
     width: 100%;
     padding: 24px;
@@ -307,20 +311,14 @@
     color: #d4af37;
     transform: scale(1.1);
   }
-  .kb-key.wide {
-    grid-column: span 2;
-    aspect-ratio: 2;
-  }
   .kb-key.action {
     background: rgba(212,175,55,0.1);
     color: #d4af37;
   }
-  .kb-key.action:focus {
-    background: rgba(212,175,55,0.3);
-  }
+  .kb-key.action:focus { background: rgba(212,175,55,0.3); }
   
   /* ============================================
-     MAIN UI
+     STATUS & INDICATORS
      ============================================ */
   #status {
     position: fixed;
@@ -355,7 +353,24 @@
     50% { opacity: 0.3; }
   }
   
-  /* Settings hint - shown briefly */
+  /* Schedule indicator (top of screen when active) */
+  #scheduleIndicator {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    padding: 6px 14px;
+    background: rgba(212,175,55,0.15);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 20px;
+    font-size: 11px;
+    color: #d4af37;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    gap: 6px;
+  }
+  #scheduleIndicator.show { display: flex; }
+  
   #hint {
     position: fixed;
     bottom: 30px;
@@ -374,15 +389,38 @@
     text-align: center;
   }
   #hint.show { opacity: 1; }
-  #hint kbd {
-    background: rgba(212,175,55,0.2);
-    padding: 2px 8px;
-    border-radius: 4px;
+  
+  /* PIN entry overlay */
+  #pinEntry {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1500;
+    flex-direction: column;
+    gap: 30px;
+  }
+  #pinEntry.show { display: flex; }
+  .pin-title {
+    color: #d4af37;
+    font-size: clamp(20px, 2.5vh, 28px);
+    letter-spacing: 4px;
+  }
+  .pin-display {
+    font-size: 48px;
+    color: #d4af37;
+    letter-spacing: 20px;
     font-family: monospace;
-    margin: 0 2px;
+    min-height: 60px;
+  }
+  .pin-help {
+    color: #666;
+    font-size: 14px;
+    text-align: center;
   }
   
-  /* Loading */
   #loading {
     position: fixed;
     inset: 0;
@@ -424,15 +462,18 @@
 </head>
 <body>
 
-<!-- ============================================
-     SETUP / SETTINGS SCREEN
-     ============================================ -->
+<!-- Invisible exit zones in 4 corners (click to open settings) -->
+<div class="exit-zone exit-zone-tl" data-corner="tl"></div>
+<div class="exit-zone exit-zone-tr" data-corner="tr"></div>
+<div class="exit-zone exit-zone-bl" data-corner="bl"></div>
+<div class="exit-zone exit-zone-br" data-corner="br"></div>
+
+<!-- Setup screen -->
 <div id="setup">
   <div class="setup-box">
     <div class="setup-title">CAFELAX SIGNAGE</div>
     <div class="setup-subtitle">استخدم أزرار الأسهم و OK من الريموت</div>
     
-    <!-- Group Name -->
     <div class="field">
       <label class="field-label">اسم المجموعة</label>
       <button class="group-display empty" id="groupDisplay" tabindex="1">
@@ -440,7 +481,6 @@
       </button>
     </div>
     
-    <!-- Rotation -->
     <div class="field">
       <label class="field-label">تدوير الشاشة</label>
       <div class="options" id="rotationOptions">
@@ -451,7 +491,6 @@
       </div>
     </div>
     
-    <!-- Fit mode -->
     <div class="field">
       <label class="field-label">طريقة العرض</label>
       <div class="options" id="fitOptions">
@@ -465,15 +504,12 @@
     
     <div class="help-text">
       التنقل: <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> · 
-      الاختيار: <kbd>OK</kbd> · 
-      الخروج: <kbd>BACK</kbd>
+      الاختيار: <kbd>OK</kbd>
     </div>
   </div>
 </div>
 
-<!-- ============================================
-     ON-SCREEN KEYBOARD
-     ============================================ -->
+<!-- On-screen keyboard -->
 <div id="keyboard">
   <div class="kb-box">
     <div class="kb-display" id="kbDisplay">
@@ -483,6 +519,16 @@
     <div class="help-text" style="margin-top:3vh;">
       <kbd>BACK</kbd> للخروج · <kbd>OK</kbd> للاختيار
     </div>
+  </div>
+</div>
+
+<!-- PIN entry (alternative way to access settings) -->
+<div id="pinEntry">
+  <div class="pin-title">SETTINGS ACCESS</div>
+  <div class="pin-display" id="pinDisplay"></div>
+  <div class="pin-help">
+    اكتب الكود: <strong style="color:#d4af37;">1234</strong><br>
+    <span style="font-size:12px;opacity:0.5;">استخدم الأسهم 1=↑ 2=→ 3=↓ 4=←</span>
   </div>
 </div>
 
@@ -503,18 +549,25 @@
   <span id="statusText">Online</span>
 </div>
 
+<!-- Schedule indicator -->
+<div id="scheduleIndicator">
+  <span>📅</span>
+  <span id="scheduleName"></span>
+</div>
+
 <!-- Hint -->
 <div id="hint"></div>
 
 <script>
 // ============================================
-// CAFELAX TV DISPLAY - Remote Control Optimized
+// CAFELAX TV DISPLAY
 // ============================================
 
 const CONFIG = {
   API_URL: window.location.origin + '/api',
   POLL_INTERVAL: 30000,
   HEARTBEAT_INTERVAL: 60000,
+  EXIT_PIN: '1234' // الكود لفتح الإعدادات
 };
 
 let state = {
@@ -527,7 +580,6 @@ let state = {
   isOnline: navigator.onLine,
 };
 
-// Working values for settings UI
 let tempSettings = {
   group: state.groupName,
   rotation: state.rotation,
@@ -545,7 +597,6 @@ function openSettings() {
   };
   updateSettingsUI();
   document.getElementById('setup').classList.remove('hidden');
-  // Focus على أول عنصر
   setTimeout(() => document.getElementById('groupDisplay').focus(), 100);
 }
 
@@ -556,7 +607,6 @@ function closeSettings() {
 }
 
 function updateSettingsUI() {
-  // Update group display
   const gd = document.getElementById('groupDisplay');
   if (tempSettings.group) {
     gd.textContent = tempSettings.group;
@@ -566,18 +616,15 @@ function updateSettingsUI() {
     gd.classList.add('empty');
   }
   
-  // Update rotation buttons
   document.querySelectorAll('#rotationOptions .option').forEach(btn => {
     btn.classList.toggle('selected', parseInt(btn.dataset.value) === tempSettings.rotation);
   });
   
-  // Update fit buttons
   document.querySelectorAll('#fitOptions .option').forEach(btn => {
     btn.classList.toggle('selected', btn.dataset.value === tempSettings.fit);
   });
 }
 
-// Click handlers
 document.getElementById('groupDisplay').addEventListener('click', openKeyboard);
 
 document.querySelectorAll('#rotationOptions .option').forEach(btn => {
@@ -613,7 +660,8 @@ function saveSettings() {
   applyRotation();
   document.getElementById('setup').classList.add('hidden');
   
-  // إعادة تشغيل العرض بالإعدادات الجديدة
+  // إعادة تشغيل
+  state.playlistVersion = '0'; // عشان يعيد تحميل القائمة
   init();
 }
 
@@ -626,7 +674,7 @@ function applyRotation() {
 }
 
 // ============================================
-// ON-SCREEN KEYBOARD (for remote input)
+// ON-SCREEN KEYBOARD
 // ============================================
 const KB_LAYOUT = [
   ['1','2','3','4','5','6','7','8','9','0'],
@@ -671,10 +719,9 @@ function buildKeyboard() {
 function openKeyboard() {
   document.getElementById('keyboard').classList.add('show');
   updateKeyboardDisplay();
-  // Focus على حرف "a"
   setTimeout(() => {
     const keys = document.querySelectorAll('.kb-key');
-    if (keys[20]) keys[20].focus(); // الحرف 'a'
+    if (keys[20]) keys[20].focus();
   }, 100);
 }
 
@@ -691,16 +738,116 @@ function updateKeyboardDisplay() {
 buildKeyboard();
 
 // ============================================
-// REMOTE NAVIGATION (Arrow keys + OK + Back)
+// MULTIPLE EXIT METHODS
+// ============================================
+
+// طريقة 1: PIN code (1234 = ↑→↓←)
+let pinBuffer = '';
+let pinTimer;
+
+function showPinEntry() {
+  pinBuffer = '';
+  document.getElementById('pinDisplay').textContent = '';
+  document.getElementById('pinEntry').classList.add('show');
+  clearTimeout(pinTimer);
+  pinTimer = setTimeout(() => {
+    document.getElementById('pinEntry').classList.remove('show');
+    pinBuffer = '';
+  }, 10000);
+}
+
+function hidePinEntry() {
+  document.getElementById('pinEntry').classList.remove('show');
+  pinBuffer = '';
+  clearTimeout(pinTimer);
+}
+
+function addPinDigit(digit) {
+  pinBuffer += digit;
+  document.getElementById('pinDisplay').textContent = '•'.repeat(pinBuffer.length);
+  
+  if (pinBuffer.length >= 4) {
+    if (pinBuffer === CONFIG.EXIT_PIN) {
+      hidePinEntry();
+      openSettings();
+    } else {
+      document.getElementById('pinDisplay').textContent = '✗';
+      setTimeout(() => {
+        pinBuffer = '';
+        document.getElementById('pinDisplay').textContent = '';
+      }, 500);
+    }
+  }
+}
+
+// طريقة 2: ضغط أركان الشاشة 4 مرات بالتتابع
+let cornerSequence = [];
+let cornerTimer;
+
+function checkCornerSequence(corner) {
+  cornerSequence.push(corner);
+  clearTimeout(cornerTimer);
+  cornerTimer = setTimeout(() => cornerSequence = [], 3000);
+  
+  // الترتيب الصحيح: TL → TR → BR → BL (عكس عقارب الساعة من الأعلى)
+  const correct = ['tl', 'tr', 'br', 'bl'];
+  
+  if (cornerSequence.length >= 4) {
+    const last4 = cornerSequence.slice(-4);
+    if (JSON.stringify(last4) === JSON.stringify(correct)) {
+      cornerSequence = [];
+      openSettings();
+    } else {
+      cornerSequence = [];
+    }
+  }
+  
+  showHint(`${cornerSequence.length}/4`);
+}
+
+document.querySelectorAll('.exit-zone').forEach(zone => {
+  zone.addEventListener('click', () => checkCornerSequence(zone.dataset.corner));
+});
+
+// طريقة 3: العد 5 مرات على OK (الأصلية)
+let okPressCount = 0;
+let okPressTimer;
+
+function handleOkPress() {
+  okPressCount++;
+  clearTimeout(okPressTimer);
+  okPressTimer = setTimeout(() => okPressCount = 0, 2000);
+  
+  if (okPressCount >= 5) {
+    okPressCount = 0;
+    openSettings();
+  } else if (okPressCount >= 2) {
+    showHint(`اضغط OK ${5 - okPressCount} مرات أخرى`);
+  }
+}
+
+function showHint(text) {
+  const hint = document.getElementById('hint');
+  hint.textContent = text;
+  hint.classList.add('show');
+  clearTimeout(window._hintTimeout);
+  window._hintTimeout = setTimeout(() => hint.classList.remove('show'), 1500);
+}
+
+// ============================================
+// REMOTE NAVIGATION
 // ============================================
 document.addEventListener('keydown', (e) => {
   const keyboardOpen = document.getElementById('keyboard').classList.contains('show');
   const settingsOpen = !document.getElementById('setup').classList.contains('hidden');
+  const pinOpen = document.getElementById('pinEntry').classList.contains('show');
   
-  // BACK button (ESC أو Back على الريموت)
-  if (e.key === 'Escape' || e.key === 'Backspace' || e.keyCode === 461 || e.keyCode === 10009) {
+  // BACK button
+  if (e.key === 'Escape' || e.keyCode === 461 || e.keyCode === 10009) {
     e.preventDefault();
-    if (keyboardOpen) {
+    if (pinOpen) {
+      hidePinEntry();
+    } else if (keyboardOpen) {
       closeKeyboard();
     } else if (settingsOpen && state.groupName) {
       closeSettings();
@@ -708,32 +855,71 @@ document.addEventListener('keydown', (e) => {
     return;
   }
   
-  // OK / Enter button
-  if (e.key === 'Enter') {
-    // الزرار اللي عليه focus هيتضغط تلقائياً
+  // PIN entry mode
+  if (pinOpen) {
+    e.preventDefault();
+    if (e.key === 'ArrowUp') addPinDigit('1');
+    else if (e.key === 'ArrowRight') addPinDigit('2');
+    else if (e.key === 'ArrowDown') addPinDigit('3');
+    else if (e.key === 'ArrowLeft') addPinDigit('4');
     return;
   }
   
-  // Arrow keys للتنقل (المتصفح بيتعامل معاهم تلقائياً مع tabindex)
-  // لكن في الـ keyboard grid نحتاج تحكم خاص
+  // Arrow navigation in keyboard or settings
   if (keyboardOpen && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
     e.preventDefault();
     handleKeyboardNav(e.key);
     return;
   }
   
-  // في الـ settings، الأسهم بتتنقل بين الحقول والخيارات
   if (settingsOpen && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
     e.preventDefault();
     handleSettingsNav(e.key);
     return;
   }
   
-  // SETTINGS shortcut: زرار "Menu" أو "Options" على الريموت
-  // أو اضغط أي حرف 3 مرات بسرعة
-  if (!settingsOpen && !keyboardOpen) {
-    handleQuickAccess(e);
+  // Quick access methods (when on display)
+  if (!settingsOpen && !keyboardOpen && !pinOpen) {
+    // Menu button
+    if (e.key === 'ContextMenu' || e.keyCode === 462 || e.keyCode === 18) {
+      e.preventDefault();
+      openSettings();
+      return;
+    }
+    
+    // OK pressed 5 times
+    if (e.key === 'Enter') {
+      handleOkPress();
+    }
+    
+    // Long press detection - hold OK for 3 seconds
+    // (handled separately below)
+    
+    // Color buttons on remote (Red = exit)
+    // Red button keycode varies: 403, 0, etc.
+    if (e.keyCode === 403 || e.key === 'F1' || e.keyCode === 116) {
+      e.preventDefault();
+      showPinEntry();
+      return;
+    }
   }
+});
+
+// Long press OK to open PIN entry
+let okPressStart = null;
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !okPressStart) {
+    okPressStart = Date.now();
+    setTimeout(() => {
+      if (okPressStart && Date.now() - okPressStart >= 2500) {
+        showPinEntry();
+        okPressStart = null;
+      }
+    }, 2500);
+  }
+});
+document.addEventListener('keyup', (e) => {
+  if (e.key === 'Enter') okPressStart = null;
 });
 
 function handleKeyboardNav(direction) {
@@ -759,23 +945,13 @@ function handleKeyboardNav(direction) {
 }
 
 function handleSettingsNav(direction) {
-  const focusable = Array.from(document.querySelectorAll('#setup [tabindex]'));
   const focused = document.activeElement;
-  const currentIdx = focusable.indexOf(focused);
-  
-  if (currentIdx === -1) {
-    focusable[0].focus();
-    return;
-  }
-  
-  const current = focusable[currentIdx];
-  const isInGroup = current.classList.contains('option');
+  const isInGroup = focused.classList.contains('option');
   
   if (isInGroup) {
-    // إذا في مجموعة خيارات (rotation/fit)
-    const parent = current.parentElement;
+    const parent = focused.parentElement;
     const siblings = Array.from(parent.querySelectorAll('.option'));
-    const siblingIdx = siblings.indexOf(current);
+    const siblingIdx = siblings.indexOf(focused);
     
     if (direction === 'ArrowLeft' && siblingIdx > 0) {
       siblings[siblingIdx - 1].focus();
@@ -787,65 +963,23 @@ function handleSettingsNav(direction) {
     }
   }
   
-  // التنقل العمودي بين الحقول
   if (direction === 'ArrowDown') {
-    // روح للحقل اللي تحت
-    if (current.id === 'groupDisplay') {
+    if (focused.id === 'groupDisplay') {
       document.querySelector('#rotationOptions .option').focus();
-    } else if (current.parentElement.id === 'rotationOptions') {
+    } else if (focused.parentElement.id === 'rotationOptions') {
       document.querySelector('#fitOptions .option').focus();
-    } else if (current.parentElement.id === 'fitOptions') {
+    } else if (focused.parentElement.id === 'fitOptions') {
       document.getElementById('saveBtn').focus();
     }
   } else if (direction === 'ArrowUp') {
-    if (current.id === 'saveBtn') {
+    if (focused.id === 'saveBtn') {
       document.querySelector('#fitOptions .option').focus();
-    } else if (current.parentElement.id === 'fitOptions') {
+    } else if (focused.parentElement.id === 'fitOptions') {
       document.querySelector('#rotationOptions .option').focus();
-    } else if (current.parentElement.id === 'rotationOptions') {
+    } else if (focused.parentElement.id === 'rotationOptions') {
       document.getElementById('groupDisplay').focus();
     }
   }
-}
-
-// ============================================
-// QUICK ACCESS TO SETTINGS
-// ============================================
-let pressCount = 0;
-let pressTimer;
-let lastKey = null;
-
-function handleQuickAccess(e) {
-  // Menu button على بعض الريموتات
-  if (e.key === 'ContextMenu' || e.keyCode === 462 || e.keyCode === 18) {
-    e.preventDefault();
-    openSettings();
-    return;
-  }
-  
-  // Press OK (Enter) 5 times quickly
-  if (e.key === 'Enter') {
-    pressCount++;
-    clearTimeout(pressTimer);
-    pressTimer = setTimeout(() => pressCount = 0, 2000);
-    
-    if (pressCount === 1) {
-      showHint('اضغط OK 4 مرات إضافية لفتح الإعدادات');
-    } else if (pressCount > 1 && pressCount < 5) {
-      showHint(`${5 - pressCount} مرات أخرى...`);
-    } else if (pressCount >= 5) {
-      pressCount = 0;
-      openSettings();
-    }
-  }
-}
-
-function showHint(text) {
-  const hint = document.getElementById('hint');
-  hint.textContent = text;
-  hint.classList.add('show');
-  clearTimeout(window._hintTimeout);
-  window._hintTimeout = setTimeout(() => hint.classList.remove('show'), 2000);
 }
 
 // ============================================
@@ -860,6 +994,9 @@ async function init() {
   applyRotation();
   document.getElementById('setup').classList.add('hidden');
   
+  // منع الشاشة من النوم
+  preventSleep();
+  
   showLoading(true);
   await syncWithServer();
   showLoading(false);
@@ -867,6 +1004,97 @@ async function init() {
   startPolling();
   startHeartbeat();
 }
+
+// ============================================
+// PREVENT SLEEP / SCREEN SAVER
+// ============================================
+let wakeLock = null;
+let sleepPreventVideo = null;
+
+async function preventSleep() {
+  // الطريقة 1: Wake Lock API (الأحدث والأفضل)
+  if ('wakeLock' in navigator) {
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      console.log('Wake Lock active');
+      
+      wakeLock.addEventListener('release', () => {
+        console.log('Wake Lock released, re-acquiring...');
+        // إعادة الـ wake lock تلقائياً
+        setTimeout(() => preventSleep(), 1000);
+      });
+    } catch (err) {
+      console.warn('Wake Lock failed:', err);
+    }
+  }
+  
+  // الطريقة 2: تشغيل فيديو مخفي (للأجهزة القديمة اللي مفيهاش Wake Lock)
+  startSleepPreventVideo();
+  
+  // الطريقة 3: محاكاة حركة الماوس بشكل دوري
+  startActivitySimulation();
+}
+
+function startSleepPreventVideo() {
+  if (sleepPreventVideo) return;
+  
+  // فيديو شفاف صغير جداً يفضل شغال في الخلفية
+  // الفيديو ده base64 لفيديو فاضي 1 ثانية (loop)
+  const blankVideoData = 'data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAr1tZGF0AAACrgYF//+q3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE2NCByMzAyNCBkN2NhMzdiIC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAyMyAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTMgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MzoweDExMyBtZT1oZXggc3VibWU9NyBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0xIG1lX3JhbmdlPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MSA4eDhkY3Q9MSBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bza2lwPTEgY2hyb21hX3FwX29mZnNldD0tMiB0aHJlYWRzPTEgbG9va2FoZWFkX3RocmVhZHM9MSBzbGljZWRfdGhyZWFkcz0wIG5yPTAgZGVjaW1hdGU9MSBpbnRlcmxhY2VkPTAgYmx1cmF5X2NvbXBhdD0wIGNvbnN0cmFpbmVkX2ludHJhPTAgYmZyYW1lcz0zIGJfcHlyYW1pZD0yIGJfYWRhcHQ9MSBiX2JpYXM9MCBkaXJlY3Q9MSB3ZWlnaHRiPTEgb3Blbl9nb3A9MCB3ZWlnaHRwPTIga2V5aW50PTI1MCBrZXlpbnRfbWluPTI1IHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29rYWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW49MCBxcG1heD02OSBxcHN0ZXA9NCBpcF9yYXRpbz0xLjQwIGFxPTE6MS4wMACAAAAAFmWIhAAv//71sXwKas';
+  
+  // طريقة بديلة - فيديو محلي فارغ 
+  sleepPreventVideo = document.createElement('video');
+  sleepPreventVideo.setAttribute('muted', '');
+  sleepPreventVideo.setAttribute('playsinline', '');
+  sleepPreventVideo.setAttribute('loop', '');
+  sleepPreventVideo.setAttribute('autoplay', '');
+  sleepPreventVideo.muted = true;
+  sleepPreventVideo.loop = true;
+  sleepPreventVideo.style.cssText = 'position:fixed;width:1px;height:1px;opacity:0.01;pointer-events:none;z-index:-1;left:0;top:0;';
+  
+  // إنشاء فيديو فاضي عن طريق canvas
+  const canvas = document.createElement('canvas');
+  canvas.width = 64;
+  canvas.height = 64;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, 64, 64);
+  
+  if (canvas.captureStream) {
+    const stream = canvas.captureStream(1); // 1 fps يكفي
+    sleepPreventVideo.srcObject = stream;
+    document.body.appendChild(sleepPreventVideo);
+    sleepPreventVideo.play().catch(err => console.warn('Sleep prevent video failed:', err));
+  }
+}
+
+function startActivitySimulation() {
+  // تحريك مؤشر صغير كل 30 ثانية للحفاظ على الجهاز نشط
+  setInterval(() => {
+    // إعادة تشغيل أي فيديو متوقف
+    document.querySelectorAll('video').forEach(v => {
+      if (v.paused) v.play().catch(() => {});
+    });
+    
+    // إعادة الـ wake lock لو اتقطع
+    if (!wakeLock || wakeLock.released) {
+      preventSleep();
+    }
+  }, 30000);
+}
+
+// إعادة الـ wake lock لما الصفحة ترجع تظهر (بعد ما كانت hidden)
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState === 'visible') {
+    if (!wakeLock || wakeLock.released) {
+      await preventSleep();
+    }
+    // إعادة تشغيل أي فيديو متوقف
+    document.querySelectorAll('video').forEach(v => {
+      if (v.paused) v.play().catch(() => {});
+    });
+  }
+});
 
 function showLoading(show) {
   document.getElementById('loading').classList.toggle('hidden', !show);
@@ -889,9 +1117,21 @@ function updateStatus(status) {
   window._statusTimeout = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
+function updateScheduleIndicator(scheduleName) {
+  const ind = document.getElementById('scheduleIndicator');
+  if (scheduleName) {
+    document.getElementById('scheduleName').textContent = scheduleName;
+    ind.classList.add('show');
+  } else {
+    ind.classList.remove('show');
+  }
+}
+
 // ============================================
-// SYNC WITH SERVER
+// SYNC WITH SERVER (with schedule support)
 // ============================================
+let nextScheduleChange = null;
+
 async function syncWithServer() {
   if (!state.isOnline) return;
   updateStatus('syncing');
@@ -910,12 +1150,25 @@ async function syncWithServer() {
       state.serverTimeOffset = data.serverTime + latency - Date.now();
     }
     
+    // معالجة الـ schedule indicator
+    if (data.source === 'schedule' && data.scheduleName) {
+      updateScheduleIndicator(data.scheduleName);
+    } else {
+      updateScheduleIndicator(null);
+    }
+    
+    // حفظ موعد التغيير القادم
+    nextScheduleChange = data.nextChange;
+    
     if (data.version && data.version !== state.playlistVersion) {
       state.playlist = data.playlist || [];
       state.playlistVersion = data.version;
       localStorage.setItem('cafelax_playlist', JSON.stringify(state.playlist));
       localStorage.setItem('cafelax_version', data.version);
       await preloadAssets(state.playlist);
+      
+      // إعادة تشغيل العرض بالمحتوى الجديد
+      startPlayback();
     }
     
     updateStatus('online');
@@ -980,7 +1233,6 @@ function startPlayback() {
   }
   
   const stage = document.getElementById('stage');
-  stage.innerHTML = '';
   
   function showNextSlide() {
     window._lastSlideTime = Date.now();
@@ -1044,7 +1296,18 @@ function showEmptyState() {
 // ============================================
 function startPolling() {
   setInterval(() => {
-    if (state.isOnline) syncWithServer();
+    if (state.isOnline) {
+      syncWithServer();
+      
+      // Check إذا كنا قريبين من schedule change
+      if (nextScheduleChange) {
+        const timeUntil = nextScheduleChange - Date.now();
+        // لو في خلال 30 ثانية، اعمل sync فوراً
+        if (timeUntil > 0 && timeUntil < 30000) {
+          setTimeout(syncWithServer, timeUntil + 1000);
+        }
+      }
+    }
   }, CONFIG.POLL_INTERVAL);
 }
 
@@ -1086,7 +1349,6 @@ setInterval(() => {
   }
 }, 30000);
 
-// Refresh page every 6 hours
 setTimeout(() => location.reload(), 6 * 60 * 60 * 1000);
 
 // ============================================
